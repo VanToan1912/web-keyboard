@@ -9,7 +9,7 @@
             </div>
             <div>
                 <a href="/" title="Kibo">
-                    <img src="/img/logo.png" alt="Kibo" style="height: 4.5rem;" />
+                    <img src="<%= request.getContextPath() %>/img/logo.png" alt="Kibo" style="height: 4.5rem;" />
                 </a>
             </div>
             <div class="d-flex align-items-center gap-3">

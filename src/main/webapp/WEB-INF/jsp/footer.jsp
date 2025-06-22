@@ -8,7 +8,7 @@
                     <div class="col">
                         <h3>
                             <a href="/" title="Kibo">
-                                <img src="/img/logo.png" alt="Kibo" class="mx-auto img-fluid" style="height: 5rem;" />
+                                <img src="<%= request.getContextPath() %>/img/logo.png" alt="Kibo" class="mx-auto img-fluid" style="height: 5rem;" />
                             </a>
                         </h3>
                         <span class="d-block mt-2">HỘ KINH DOANH Kibo</span>
