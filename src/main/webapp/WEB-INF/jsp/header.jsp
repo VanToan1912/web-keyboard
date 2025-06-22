@@ -13,24 +13,29 @@
                 </a>
             </div>
             <div class="d-flex align-items-center gap-3">
-                <c:choose>
-                    <c:when test="${not empty currentUser}">
-                        <a href="/orders" title="Tài khoản" class="text-dark text-decoration-none">
-                            <i class="fas fa-user fa-lg"></i>
-                        </a>
-                    </c:when>
-                    <c:otherwise>
-                        <a href="/login" title="Tài khoản" class="text-dark text-decoration-none">
-                            <i class="fas fa-user fa-lg"></i>
-                        </a>
-                    </c:otherwise>
-                </c:choose>
+                <c:if test="${currentUser != null && currentUser.role == 'ADMIN'}">
+                    <a class="nav-link nav-item" href="/dashboard">Admin Panel</a>
+                </c:if>
+                <div class="dropdown">
+                    <a href="#" class="text-dark text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user fa-lg"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <c:choose>
+                            <c:when test="${not empty currentUser}">
+                                <li><a class="dropdown-item" href="/orders">Đơn Hàng</a></li>
+                                <li><a class="dropdown-item" href="/auth/logout">Đăng Xuất</a></li>
+                            </c:when>
+                            <c:otherwise>
+                                <li><a class="dropdown-item" href="/login">Đăng Nhập</a></li>
+                                <li><a class="dropdown-item" href="/signup">Đăng Ký</a></li>
+                            </c:otherwise>
+                        </c:choose>
+                    </ul>
+                </div>
                 <a href="/cart" title="Giỏ hàng" class="position-relative text-dark text-decoration-none">
                     <i class="fas fa-shopping-cart fa-lg"></i>
                     <span class="position-absolute top-0 start-100 translate-middle badge bg-danger rounded-circle">${cartItemCount}</span>
-                </a>
-                <a href="/search" title="Tìm kiếm" class="text-dark text-decoration-none">
-                    <i class="fas fa-search fa-lg"></i>
                 </a>
             </div>
         </div>
