@@ -7,3 +7,4 @@ vite.config.ts.*
 .idea
 .vscode
 /target/
+src/main/resources/application.properties
