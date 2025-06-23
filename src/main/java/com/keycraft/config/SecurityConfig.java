@@ -40,8 +40,10 @@ public class SecurityConfig {
 				.authorizeHttpRequests(authz -> authz
 						.requestMatchers("/api/products/**", "/api/services/**", "/api/auth/**", "/auth/**",
 								"/auth/verify-code", "/auth/forgot-password", "/auth/verify-reset-code", "/auth/reset-password").permitAll()
-						.requestMatchers("/", "/login", "/signup", "/cart", "/checkout", "/client/**", "/static/**", "/css/**", "/js/**", "/images/**").permitAll()
+						.requestMatchers("/", "/login", "/signup", "/cart", "/checkout", "/client/**", "/static/**",
+								"/css/**", "/js/**", "/images/**", "/uploads/**").permitAll()
 						.requestMatchers("/dashboard").hasRole("ADMIN")
+						.requestMatchers("/profile").authenticated()
 						.anyRequest().permitAll()
 				)
 				.formLogin(form -> form

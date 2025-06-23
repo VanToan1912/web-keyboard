@@ -98,16 +98,16 @@ public class AuthService {
         }
         User user = userOpt.get();
         String resetCode = generateVerificationCode();
-        user.setResetToken(resetCode); // Use resetToken instead of verificationToken
+        user.setVerificationToken(resetCode);
         userRepository.save(user);
         emailService.sendPasswordResetEmail(email, resetCode);
     }
 
     public boolean verifyResetCode(String code) {
-        Optional<User> userOpt = userRepository.findByResetToken(code);
+        Optional<User> userOpt = userRepository.findByVerificationToken(code);
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-            user.setResetToken(null); // Clear resetToken after verification
+            user.setVerificationToken(null);
             userRepository.save(user);
             return true;
         }
@@ -118,13 +118,28 @@ public class AuthService {
         Optional<User> userOpt = userRepository.findByEmail(email);
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-            if (user.getResetToken() != null) {
+            if (user.getVerificationToken() != null) {
                 throw new RuntimeException("Reset code not verified.");
             }
             user.setPassword(passwordEncoder.encode(newPassword));
             userRepository.save(user);
         } else {
             throw new RuntimeException("Email not found.");
+        }
+    }
+
+    public void updateUserProfile(Long userId, String firstName, String lastName, String profileImageUrl) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            if (profileImageUrl != null) {
+                user.setProfileImageUrl(profileImageUrl);
+            }
+            userRepository.save(user);
+        } else {
+            throw new RuntimeException("User not found.");
         }
     }
 }
