@@ -30,4 +30,21 @@ public class EmailService {
 
         mailSender.send(message);
     }
+
+    public void sendPasswordResetEmail(String to, String resetCode) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        helper.setTo(to);
+        helper.setSubject("KeyCraft - Đặt lại mật khẩu");
+        helper.setText(
+                "<h2>KeyCraft Password Reset</h2>" +
+                        "<p>Bạn đã yêu cầu đặt lại mật khẩu. Vui lòng sử dụng mã sau để xác minh:</p>" +
+                        "<h3>" + resetCode + "</h3>" +
+                        "<p>Nhập mã này trên trang đặt lại mật khẩu để tiếp tục.</p>" +
+                        "<p>Mã này có hiệu lực trong 24 giờ.</p>", true
+        );
+
+        mailSender.send(message);
+    }
 }

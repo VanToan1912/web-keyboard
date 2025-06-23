@@ -23,6 +23,7 @@
                     <ul class="dropdown-menu dropdown-menu-end">
                         <c:choose>
                             <c:when test="${not empty currentUser}">
+                                <li><a class="dropdown-item" href="/profile">Thông tin người dùng</a></li>
                                 <li><a class="dropdown-item" href="/orders">Đơn Hàng</a></li>
                                 <li><a class="dropdown-item" href="/auth/logout">Đăng Xuất</a></li>
                             </c:when>

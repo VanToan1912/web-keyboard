@@ -34,19 +34,12 @@ public class AuthService {
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setRole(role != null ? role : User.UserRole.CUSTOMER);
-        String verificationCode = generateVerificationCode(); // Generate 6-digit code
+        String verificationCode = generateVerificationCode();
         user.setVerificationToken(verificationCode);
 
         User savedUser = userRepository.save(user);
-        emailService.sendVerificationEmail(email, verificationCode); // Send code via email
-
+        emailService.sendVerificationEmail(email, verificationCode);
         return savedUser;
-    }
-
-    private String generateVerificationCode() {
-        Random random = new Random();
-        int code = 100000 + random.nextInt(900000); // Generate 6-digit code (100000-999999)
-        return String.valueOf(code);
     }
 
     public Optional<User> authenticateUser(String email, String password) {
@@ -71,7 +64,7 @@ public class AuthService {
             User user = userOpt.get();
             if (!user.isVerified()) {
                 user.setVerified(true);
-                user.setVerificationToken(null); // Clear token after verification
+                user.setVerificationToken(null);
                 userRepository.save(user);
                 return true;
             }
@@ -90,5 +83,78 @@ public class AuthService {
 
         String email = authentication.getName();
         return userRepository.findByEmail(email).orElse(null);
+    }
+
+    private String generateVerificationCode() {
+        Random random = new Random();
+        int code = 100000 + random.nextInt(900000);
+        return String.valueOf(code);
+    }
+
+    public void requestPasswordReset(String email) throws MessagingException {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) {
+            throw new RuntimeException("Email not found.");
+        }
+        User user = userOpt.get();
+        String resetCode = generateVerificationCode();
+        user.setVerificationToken(resetCode);
+        userRepository.save(user);
+        emailService.sendPasswordResetEmail(email, resetCode);
+    }
+
+    public boolean verifyResetCode(String code) {
+        Optional<User> userOpt = userRepository.findByVerificationToken(code);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setVerificationToken(null);
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
+
+    public void resetPassword(String email, String newPassword) {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            if (user.getVerificationToken() != null) {
+                throw new RuntimeException("Reset code not verified.");
+            }
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+        } else {
+            throw new RuntimeException("Email not found.");
+        }
+    }
+
+    public void updateUserProfile(Long userId, String firstName, String lastName, String profileImageUrl) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            if (profileImageUrl != null) {
+                user.setProfileImageUrl(profileImageUrl);
+            }
+            userRepository.save(user);
+        } else {
+            throw new RuntimeException("User not found.");
+        }
+    }
+
+    public void changePassword(String email, String currentPassword, String newPassword) {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) {
+            throw new RuntimeException("Email not found.");
+        }
+
+        User user = userOpt.get();
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new RuntimeException("Mật khẩu hiện tại không đúng.");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
     }
 }

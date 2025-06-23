@@ -40,10 +40,13 @@ public class User {
     private LocalDateTime updatedAt;
 
     @Column(nullable = false)
-    private boolean isVerified = false; // New field for verification status
+    private boolean isVerified = false;
 
     @Column(unique = true)
-    private String verificationToken; // New field for verification token
+    private String verificationToken;
+
+    @Column(unique = true)
+    private String resetToken; // New field for password reset code
 
     public enum UserRole {
         ADMIN, CUSTOMER
@@ -74,12 +77,14 @@ public class User {
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
-
-    // New Getters and Setters
     public boolean isVerified() { return isVerified; }
     public void setVerified(boolean verified) { isVerified = verified; }
     public String getVerificationToken() { return verificationToken; }
     public void setVerificationToken(String verificationToken) { this.verificationToken = verificationToken; }
+
+    // New Getter and Setter for resetToken
+    public String getResetToken() { return resetToken; }
+    public void setResetToken(String resetToken) { this.resetToken = resetToken; }
 
     @PrePersist
     protected void onCreate() {

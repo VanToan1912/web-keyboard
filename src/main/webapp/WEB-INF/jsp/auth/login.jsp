@@ -122,6 +122,7 @@
 
                 <div class="text-center">
                     <p class="mb-0">Chưa có tài khoản? <a href="/signup" class="text-indigo-600 text-decoration-none">Đăng ký tại đây</a></p>
+                    <p class="mb-0"><a href="/auth/forgot-password" class="text-indigo-600 text-decoration-none">Quên mật khẩu?</a></p>
                     <p class="mt-2"><a href="/" class="text-gray-500 text-decoration-none">← Quay lại trang chủ</a></p>
                 </div>
             </div>
