@@ -34,19 +34,12 @@ public class AuthService {
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setRole(role != null ? role : User.UserRole.CUSTOMER);
-        String verificationCode = generateVerificationCode(); // Generate 6-digit code
+        String verificationCode = generateVerificationCode();
         user.setVerificationToken(verificationCode);
 
         User savedUser = userRepository.save(user);
-        emailService.sendVerificationEmail(email, verificationCode); // Send code via email
-
+        emailService.sendVerificationEmail(email, verificationCode);
         return savedUser;
-    }
-
-    private String generateVerificationCode() {
-        Random random = new Random();
-        int code = 100000 + random.nextInt(900000); // Generate 6-digit code (100000-999999)
-        return String.valueOf(code);
     }
 
     public Optional<User> authenticateUser(String email, String password) {
@@ -71,7 +64,7 @@ public class AuthService {
             User user = userOpt.get();
             if (!user.isVerified()) {
                 user.setVerified(true);
-                user.setVerificationToken(null); // Clear token after verification
+                user.setVerificationToken(null);
                 userRepository.save(user);
                 return true;
             }
@@ -90,5 +83,48 @@ public class AuthService {
 
         String email = authentication.getName();
         return userRepository.findByEmail(email).orElse(null);
+    }
+
+    private String generateVerificationCode() {
+        Random random = new Random();
+        int code = 100000 + random.nextInt(900000);
+        return String.valueOf(code);
+    }
+
+    public void requestPasswordReset(String email) throws MessagingException {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) {
+            throw new RuntimeException("Email not found.");
+        }
+        User user = userOpt.get();
+        String resetCode = generateVerificationCode();
+        user.setResetToken(resetCode); // Use resetToken instead of verificationToken
+        userRepository.save(user);
+        emailService.sendPasswordResetEmail(email, resetCode);
+    }
+
+    public boolean verifyResetCode(String code) {
+        Optional<User> userOpt = userRepository.findByResetToken(code);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setResetToken(null); // Clear resetToken after verification
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
+
+    public void resetPassword(String email, String newPassword) {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            if (user.getResetToken() != null) {
+                throw new RuntimeException("Reset code not verified.");
+            }
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+        } else {
+            throw new RuntimeException("Email not found.");
+        }
     }
 }
