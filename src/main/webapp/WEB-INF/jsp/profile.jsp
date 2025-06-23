@@ -34,8 +34,8 @@
         .form-control:focus { border-color: #4a90e2; box-shadow: 0 0 5px rgba(74, 144, 226, 0.5); }
         .btn-primary { background-color: #4a90e2; border-color: #4a90e2; }
         .btn-primary:hover { background-color: #357abd; border-color: #357abd; }
-        .btn-secondary { background-color: #dc3545; border-color: #6c757d; }
-        .btn-secondary:hover { background-color: #ffc107; border-color: #5a6268; }
+        .btn-secondary { background-color: #357abd; border-color: #6c757d; }
+        .btn-secondary:hover { background-color: #357abd; border-color: #5a6268; }
         .alert-success { background-color: #d4edda; border-color: #c3e6cb; }
         .alert-danger { background-color: #f8d7da; border-color: #f5c6cb; }
 
@@ -102,12 +102,12 @@
                     <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
                         <i class="fas fa-lock"></i> Đổi mật khẩu
                     </button>
-<%--                    <a href="${pageContext.request.contextPath}/order" class="btn btn-secondary">--%>
-<%--                        <i class="fas fa-history"></i> Lịch sử mua hàng--%>
-<%--                    </a>--%>
+                    <a href="${pageContext.request.contextPath}/orders" class="btn btn-secondary">
+                        <i class="fas fa-history"></i> Lịch sử mua hàng
+                    </a>
                 </div>
 
-                <div class="d-flex justify-content-between mb-3">
+                <div class="text-center mb-4">
                     <a href="/auth/logout" class="btn btn-secondary">Đăng xuất</a>
                 </div>
             </div>

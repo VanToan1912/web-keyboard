@@ -36,7 +36,7 @@
 <%@ include file="header.jsp" %>
 
 <div class="cart-container mt-4">
-  <h2 class="cart-header">Trạng thái > Giỏ hàng</h2>
+  <h2 class="cart-header">Trang chủ > Giỏ hàng</h2>
   <h3 class="cart-header">GIỎ HÀNG (<span id="cart-count">${cartItemCount}</span> sản phẩm)</h3>
 
   <c:if test="${empty cartItems}">
@@ -59,7 +59,10 @@
                 <fmt:formatNumber value="${item.product.price}" type="currency" currencySymbol="₫" pattern="#,##0₫" />
               </p>
             </div>
+
             <div class="cart-quantity">
+              <button class="btn btn-sm" onclick="removeFromCart('${item.id}')">
+                <i class="fas fa-trash"></i>
               <button class="btn btn-outline-secondary" type="button" onclick="changeQuantity(this, -1)"
                       data-cart-item-id="${item.id}" ${item.quantity <= 1 ? 'disabled' : ''}>-</button>
               <input type="number" id="input-${item.id}" class="form-control text-center"
@@ -69,8 +72,10 @@
                       data-cart-item-id="${item.id}" ${item.quantity >= 10 ? 'disabled' : ''}>+</button>
             </div>
           </div>
+          <button class="btn btn-outline-secondary w-100 mt-2" onclick="clearCart()">Xoá tất cả sản phẩm</button>
         </c:forEach>
       </div>
+
       <div class="cart-summary">
         <div class="cart-summary-item">Tạm tính: <span id="cart-total">
                     <fmt:formatNumber value="${cartTotal}" type="currency" currencySymbol="₫" pattern="#,##0₫" />
@@ -82,6 +87,7 @@
         <div class="cart-actions">
           <button class="btn btn-black" onclick="proceedToCheckout()">THANH TOÁN NGAY</button>
           <button class="btn btn-outline-secondary" onclick="window.location.href='/products'">TIẾP TỤC MUA HÀNG</button>
+
         </div>
       </div>
     </div>
