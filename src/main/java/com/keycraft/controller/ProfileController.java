@@ -64,4 +64,25 @@ public class ProfileController {
 
         return "redirect:/profile";
     }
+
+    @PostMapping("/profile/change-password")
+    public String changePassword(
+            Authentication authentication,
+            @RequestParam String currentPassword,
+            @RequestParam String newPassword,
+            RedirectAttributes redirectAttributes) {
+        User user = authService.getCurrentUser(authentication);
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        try {
+            authService.changePassword(user.getEmail(), currentPassword, newPassword);
+            redirectAttributes.addFlashAttribute("success", "Đổi mật khẩu thành công!");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+
+        return "redirect:/profile";
+    }
 }

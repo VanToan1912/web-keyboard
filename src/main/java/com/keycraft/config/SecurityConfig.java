@@ -43,7 +43,7 @@ public class SecurityConfig {
 						.requestMatchers("/", "/login", "/signup", "/cart", "/checkout", "/client/**", "/static/**",
 								"/css/**", "/js/**", "/images/**", "/uploads/**").permitAll()
 						.requestMatchers("/dashboard").hasRole("ADMIN")
-						.requestMatchers("/profile").authenticated()
+						.requestMatchers("/profile", "/profile/change-password", "/order-history").authenticated()
 						.anyRequest().permitAll()
 				)
 				.formLogin(form -> form

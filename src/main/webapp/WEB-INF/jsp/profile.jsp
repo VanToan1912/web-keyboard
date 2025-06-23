@@ -13,24 +13,32 @@
         .profile-card {
             background: white;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
             margin-top: 2rem;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .profile-img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #4a90e2;
+            display: block;
+            margin: 0 auto 1rem;
         }
         .form-label { color: #2c3e50; }
         .form-control { border-color: #dfe6e9; }
         .form-control:focus { border-color: #4a90e2; box-shadow: 0 0 5px rgba(74, 144, 226, 0.5); }
         .btn-primary { background-color: #4a90e2; border-color: #4a90e2; }
         .btn-primary:hover { background-color: #357abd; border-color: #357abd; }
+        .btn-secondary { background-color: #dc3545; border-color: #6c757d; }
+        .btn-secondary:hover { background-color: #ffc107; border-color: #5a6268; }
         .alert-success { background-color: #d4edda; border-color: #c3e6cb; }
         .alert-danger { background-color: #f8d7da; border-color: #f5c6cb; }
-        .profile-img {
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 3px solid #4a90e2;
-        }
+
     </style>
 </head>
 <body>
@@ -85,20 +93,83 @@
                         <label for="profileImage" class="form-label">Ảnh đại diện</label>
                         <input type="file" class="form-control" id="profileImage" name="profileImage" accept="image/*">
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">
+                    <button type="submit" class="btn btn-primary w-100 mb-2">
                         <i class="fas fa-save"></i> Cập nhật thông tin
                     </button>
                 </form>
 
-                <div class="text-center mt-3">
-                    <a href="/auth/logout" class="text-danger text-decoration-none">Đăng xuất</a>
+                <div class="d-flex justify-content-between mb-3">
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                        <i class="fas fa-lock"></i> Đổi mật khẩu
+                    </button>
+<%--                    <a href="${pageContext.request.contextPath}/order" class="btn btn-secondary">--%>
+<%--                        <i class="fas fa-history"></i> Lịch sử mua hàng--%>
+<%--                    </a>--%>
+                </div>
+
+                <div class="d-flex justify-content-between mb-3">
+                    <a href="/auth/logout" class="btn btn-secondary">Đăng xuất</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Change Password Modal -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changePasswordModalLabel">Đổi mật khẩu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="changePasswordForm" action="/profile/change-password" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="currentPassword" class="form-label">Mật khẩu hiện tại</label>
+                        <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">Mật khẩu mới</label>
+                        <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Xác nhận mật khẩu mới</label>
+                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                    </div>
+                    <div id="passwordError" class="text-danger d-none"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script src="/webjars/jquery/3.7.0/jquery.min.js"></script>
 <script src="/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#changePasswordForm').on('submit', function(e) {
+            const newPassword = $('#newPassword').val();
+            const confirmPassword = $('#confirmPassword').val();
+            const errorDiv = $('#passwordError');
+
+            if (newPassword !== confirmPassword) {
+                e.preventDefault();
+                errorDiv.text('Mật khẩu mới và xác nhận mật khẩu không khớp.');
+                errorDiv.removeClass('d-none');
+            } else if (newPassword.length < 6) {
+                e.preventDefault();
+                errorDiv.text('Mật khẩu mới phải có ít nhất 6 ký tự.');
+                errorDiv.removeClass('d-none');
+            } else {
+                errorDiv.addClass('d-none');
+            }
+        });
+    });
+</script>
 </body>
 </html>
