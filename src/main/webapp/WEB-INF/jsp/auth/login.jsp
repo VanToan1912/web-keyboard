@@ -71,10 +71,16 @@
                 </div>
 
                 <!-- Error Messages -->
+                <c:if test="${success != null}">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle"></i> ${success}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </c:if>
                 <c:if test="${error != null}">
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         <i class="fas fa-exclamation-circle"></i> ${error}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 </c:if>
 
