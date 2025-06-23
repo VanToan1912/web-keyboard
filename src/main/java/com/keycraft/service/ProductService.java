@@ -14,17 +14,24 @@ public class ProductService {
 
     @Autowired
     private ProductRepository productRepository;
-    
+
     @Autowired
     private OrderItemService orderItemService;
 
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
-    
 
-    public List<Product> getProductsWithFilters(String category, String brand, String switchType, 
-                                               BigDecimal minPrice, BigDecimal maxPrice, String search) {
+    public List<Product> getNewProducts() {
+        return productRepository.findTop4ByOrderByCreatedAtDesc();
+    }
+
+    public List<Product> getSuggestedProducts() {
+        return productRepository.findTop4Random();
+    }
+
+    public List<Product> getProductsWithFilters(String category, String brand, String switchType,
+                                                BigDecimal minPrice, BigDecimal maxPrice, String search) {
         return productRepository.findProductsWithFilters(category, brand, switchType, minPrice, maxPrice, search);
     }
 
@@ -35,7 +42,7 @@ public class ProductService {
     public Optional<Product> getProductById(Long id) {
         return productRepository.findById(id);
     }
-    
+
     public Product findById(Long id) {
         return productRepository.findById(id).orElse(null);
     }
@@ -64,18 +71,18 @@ public class ProductService {
     public boolean deleteProduct(Long id) {
         return productRepository.findById(id).map(p -> {
             if (orderItemService.existsInActiveOrders(id)) {
-                return false; // còn đơn hàng chưa huỷ -> không xoá
+                return false;
             }
             p.setDiscontinued(true);
             productRepository.save(p);
             return true;
         }).orElse(false);
     }
+
     public boolean discontinueProduct(Long id) {
         Product product = productRepository.findById(id).orElse(null);
         if (product == null) return false;
 
-        // Kiểm tra xem sản phẩm có đang nằm trong order chưa huỷ không
         boolean usedInActiveOrders = orderItemService.existsInActiveOrders(id);
         if (usedInActiveOrders) return false;
 
@@ -83,6 +90,4 @@ public class ProductService {
         productRepository.save(product);
         return true;
     }
-    
-    
 }

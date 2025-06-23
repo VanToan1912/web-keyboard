@@ -7,9 +7,9 @@
                 <span class="text-muted me-2">HOTLINE TƯ VẤN:</span>
                 <a href="/" class="text-dark fw-bold text-decoration-none">028 3896 6780</a>
             </div>
-            <div>
+            <div style="position: relative; left: -7%; top: 0;">
                 <a href="/" title="Kibo">
-                    <img src="<%= request.getContextPath() %>/img/logo.png" alt="Kibo" style="height: 4.5rem;" />
+                    <img src="https://res.cloudinary.com/dxlz4iaqu/image/upload/v1750696813/logo_isvtzj.png" alt="Kibo" style="height: 4.5rem;" />
                 </a>
             </div>
             <div class="d-flex align-items-center gap-3">
