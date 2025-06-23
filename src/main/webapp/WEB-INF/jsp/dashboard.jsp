@@ -20,6 +20,7 @@
     <div class="navbar-nav ms-auto d-flex flex-row gap-3">
       <a class="nav-link text-white" href="/"><i class="fas fa-store"></i> Back to Store</a>
       <a class="nav-link text-white" href="/auth/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+      
     </div>
   </div>
 </nav>
@@ -35,6 +36,7 @@
     <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#products">Products</a></li>
     <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#orders">Orders</a></li>
     <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#services">Services</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#statistics">Statistics</a></li>
   </ul>
 
   <div class="tab-content mt-4">
@@ -335,6 +337,73 @@
     </table>
   </div>
 </div>
+
+<!-- Statistics -->
+<div class="tab-pane fade" id="statistics">
+  <h4><i class="fas fa-chart-bar"></i> Sales Statistics</h4>
+
+<div class="container mt-4">
+  <h2>Thống kê doanh thu</h2>
+
+  <div class="row mb-3">
+    <div class="col-md-3">
+      <label>Kiểu biểu diễn</label>
+      <select id="viewType" class="form-select">
+        <option value="date" selected>Ngày</option>
+        <option value="month">Tháng</option>
+        <option value="year">Năm</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label>Tháng</label>
+      <select id="selectMonth" class="form-select">
+    <option value="1">Tháng 1</option>	
+        <option value="2">Tháng 2</option>
+        <option value="3">Tháng 3</option>
+        <option value="4">Tháng 4</option>
+        <option value="5">Tháng 5</option>
+        <option value="6">Tháng 6</option>
+        <option value="7">Tháng 7</option>
+        <option value="8">Tháng 8</option>
+        <option value="9">Tháng 9</option>
+        <option value="10">Tháng 10</option>
+        <option value="11">Tháng 11</option>
+        <option value="12">Tháng 12</option></select>
+    </div>
+    <div class="col-md-2">
+      <label>Năm</label>
+      <select id="selectYear" class="form-select">
+     <option value="2020">2020</option>
+        <option value="2021">2021</option>
+        <option value="2022">2022</option>
+        <option value="2023">2023</option>
+        <option value="2024">2024</option>
+        <option value="2025">2025</option>
+        <option value="2026">2026</option>
+        <option value="2027">2027</option>
+        <option value="2028">2028</option>
+        <option value="2029">2029</option>
+        <option value="2030">2030</option>
+        </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Bar Chart -->
+    <div class="col-md-6">
+      <h5>Biểu đồ cột: Doanh thu theo thời gian</h5>
+      <canvas id="barChart" height="200"></canvas>
+    </div>
+
+    <!-- Pie Chart -->
+    <div class="col-md-6">
+      <h5>Biểu đồ tròn: Doanh thu theo danh mục trong tháng</h5>
+      <canvas id="pieChart" height="200"></canvas>
+    </div>
+  </div>
+</div>
+</div>
+
 
 
 
@@ -678,8 +747,91 @@
 
 <script src="/webjars/jquery/jquery.min.js"></script>
 <script src="/webjars/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+let barChartInstance = null;
+let pieChartInstance = null;
 
+$(function () {
+  // Khởi tạo dropdown tháng/năm
+  const now = new Date();
+  const currentMonth = now.getMonth() + 1; // Lấy tháng hiện tại (1-12)
+  const currentYear = now.getFullYear();   // Lấy năm hiện tại
+
+  // Chọn tháng và năm hiện tại trong dropdown
+  $('#selectMonth').val(currentMonth).change(); // .change() để kích hoạt event nếu cần
+  $('#selectYear').val(currentYear).change();   // .change() để kích hoạt event nếu cần
+
+  // Lắng nghe sự kiện thay đổi của các dropdown và viewType để vẽ biểu đồ
+  $('#viewType, #selectMonth, #selectYear').change(fetchAndDrawCharts);
+  
+  // Gọi hàm vẽ biểu đồ lần đầu khi trang tải xong
+  fetchAndDrawCharts(); 
+});
+
+function fetchAndDrawCharts() {
+  const type = $('#viewType').val(); // 'date', 'month', 'year'
+  let month = parseInt($('#selectMonth').val());
+  let year = parseInt($('#selectYear').val());
+
+  // Đảm bảo month và year là số, tránh gửi NaN lên backend
+  if (isNaN(month)) {
+    month = null; // Hoặc một giá trị mặc định hợp lệ khác nếu API yêu cầu
+  }
+  if (isNaN(year)) {
+    year = null;  // Hoặc một giá trị mặc định hợp lệ khác nếu API yêu cầu
+  }
+
+  let format;
+  if (type === 'date') format = '%Y-%m-%d';
+  else if (type === 'month') format = '%Y-%m';
+  else format = '%Y';
+
+  // Bar Chart API
+  $.get('/api/statistics/revenue-by-period', { format, month, year }, function (data) {
+    const labels = data.map(d => d.timeLabel);
+    const values = data.map(d => Number(d.revenue || 0));
+
+    if (barChartInstance) barChartInstance.destroy();
+    const ctx = document.getElementById('barChart').getContext('2d');
+    barChartInstance = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Doanh thu ($)',
+          data: values,
+          backgroundColor: '#0d6efd'
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  });
+
+  // Pie Chart API
+  $.get('/api/statistics/revenue-by-category', { month, year }, function (data) {
+    const labels = data.map(d => d.categoryName);
+    const values = data.map(d => Number(d.revenue || 0));
+
+    if (pieChartInstance) pieChartInstance.destroy();
+    const ctx = document.getElementById('pieChart').getContext('2d');
+    pieChartInstance = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: values,
+          backgroundColor: ['#0d6efd', '#198754', '#ffc107', '#dc3545', '#6f42c1']
+        }]
+      }
+    });
+  });
+}
 window.filterOrders = function() {
 	  const name = $('#filterName').val().toLowerCase();
 	  const category = $('#filterCategory').val();

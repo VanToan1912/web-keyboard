@@ -4,6 +4,7 @@ import com.keycraft.model.CartItem;
 import com.keycraft.model.Order;
 import com.keycraft.model.Product;
 import com.keycraft.model.User;
+import com.keycraft.repository.OrderRepository;
 import com.keycraft.repository.UserRepository;
 import com.keycraft.service.CartService;
 import com.keycraft.service.CustomUserDetailsService;
@@ -21,6 +22,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -36,7 +38,8 @@ public class HomeController {
     private OrderService orderService;
     @Autowired
     private ServiceBookingService serviceBookingService;
-
+    @Autowired
+    private OrderRepository orderRepository;
     @GetMapping("/")
     public String homeRedirect() {
         return "redirect:/index";
@@ -102,7 +105,12 @@ public class HomeController {
 
         String email = auth.getName();
         User user = userRepository.findByEmail(email).orElse(null);
-
+        List<Object[]> revenueByDay = orderRepository.getRevenueByPeriod(
+        	    "%Y-%m-%d",
+        	    LocalDate.now().getMonthValue(),
+        	    LocalDate.now().getYear()
+        	);        
+        List<Object[]> revenueByCategory = orderRepository.getRevenueByCategory(LocalDate.now().getMonthValue(), LocalDate.now().getYear());
         if (user == null || !User.UserRole.ADMIN.equals(user.getRole())) {
             return "redirect:/login?error=access_denied";
         }
@@ -113,7 +121,11 @@ public class HomeController {
         model.addAttribute("users", userRepository.findAll());
         model.addAttribute("orders", orderService.getAllOrders());
         model.addAttribute("orderStatuses", Order.OrderStatus.values());
-         model.addAttribute("services", serviceBookingService.findAll());
+        model.addAttribute("services", serviceBookingService.findAll());
+        model.addAttribute("revenueByDay", revenueByDay);
+        model.addAttribute("revenueByCategory", revenueByCategory);
+        model.addAttribute("currentMonth", LocalDate.now().getMonthValue());
+        model.addAttribute("currentYear", LocalDate.now().getYear());
 
 
 
