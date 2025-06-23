@@ -41,29 +41,26 @@ public class HomeController {
     @GetMapping("/index")
     public String index(Model model) {
         var auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = null;
 
-        if (auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
-            return "redirect:/login";
+        if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
+            String email = auth.getName();
+            user = userRepository.findByEmail(email).orElse(null);
         }
 
-        String email = auth.getName();
-        User user = userRepository.findByEmail(email).orElse(null);
-
-        if (user == null) {
-            return "redirect:/login";
+        if (user != null) {
+            model.addAttribute("currentUser", user);
+            model.addAttribute("cartItemCount", cartService.getCartItemCount(user));
+        } else {
+            model.addAttribute("cartItemCount", 0L);
         }
 
-        model.addAttribute("currentUser", user);
         model.addAttribute("featuredProducts", productService.getFeaturedProducts());
-
-     // ← **Thêm dòng này** để badge Cart biết có bao nhiêu item
-        Long cartItemCount = cartService.getCartItemCount(user);
-        model.addAttribute("cartItemCount", cartItemCount);
+        model.addAttribute("newProducts", productService.getNewProducts());
+        model.addAttribute("suggestedProducts", productService.getSuggestedProducts());
 
         return "index";
     }
-
-
 
     @GetMapping("/products")
     public String products(Model model) {
@@ -87,7 +84,6 @@ public class HomeController {
         return "products";
     }
 
-
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -103,26 +99,15 @@ public class HomeController {
             return "redirect:/login?error=access_denied";
         }
 
-        // Add attribute for dashboard tabs
         model.addAttribute("currentUser", user);
         model.addAttribute("products", productService.getAllProducts());
         model.addAttribute("users", userRepository.findAll());
         model.addAttribute("orders", orderService.getAllOrders());
         model.addAttribute("orderStatuses", Order.OrderStatus.values());
-         model.addAttribute("services", serviceBookingService.findAll());
-
-
-
-        // TODO: add orderService.getAllOrders() if you have
-        // model.addAttribute("orders", orderService.getAllOrders());
-
-        // TODO: add serviceBookingService.getAllBookings() if needed
-        // model.addAttribute("services", serviceBookingService.getAll());
+        model.addAttribute("services", serviceBookingService.findAll());
 
         return "dashboard";
     }
-
-
 
     @GetMapping("/login")
     public String login(HttpSession session) {
@@ -141,5 +126,4 @@ public class HomeController {
         }
         return "auth/signup";
     }
-
 }
