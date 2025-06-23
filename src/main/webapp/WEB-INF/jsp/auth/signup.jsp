@@ -6,11 +6,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng ký - KeyCraft</title>
-    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/webjars/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/webjars/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #4a90e2 0%, #6b48cc 100%); /* Màu gradient mới: xanh dương đậm sang tím */
+            background: linear-gradient(135deg, #4a90e2 0%, #6b48cc 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -18,39 +18,18 @@
         .signup-card {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(74, 144, 226, 0.3); /* Shadow với màu xanh dương nhạt */
+            box-shadow: 0 10px 30px rgba(74, 144, 226, 0.3);
             padding: 2rem;
         }
-        .form-label {
-            color: #2c3e50; /* Màu chữ nhãn: xám đậm */
-        }
-        .form-control {
-            border-color: #dfe6e9; /* Viền input màu xám nhạt */
-            background-color: #f8f9fa; /* Nền input màu xám rất nhạt */
-        }
-        .form-control:focus {
-            border-color: #4a90e2; /* Viền input khi focus: xanh dương */
-            box-shadow: 0 0 5px rgba(74, 144, 226, 0.5); /* Hiệu ứng focus */
-        }
-        .btn-primary {
-            background-color: #4a90e2; /* Nút submit màu xanh dương */
-            border-color: #4a90e2;
-        }
-        .btn-primary:hover {
-            background-color: #357abd; /* Nút hover màu xanh đậm hơn */
-            border-color: #357abd;
-        }
-        .text-indigo-600 {
-            color: #4a90e2; /* Màu chữ liên kết: xanh dương */
-        }
-        .alert-danger {
-            background-color: #f8d7da; /* Màu cảnh báo lỗi nhạt hơn */
-            border-color: #f5c6cb;
-        }
-        .input-group-text {
-            background-color: #f8f9fa; /* Nền icon input */
-            border-color: #dfe6e9;
-        }
+        .form-label { color: #2c3e50; }
+        .form-control { border-color: #dfe6e9; background-color: #f8f9fa; }
+        .form-control:focus { border-color: #4a90e2; box-shadow: 0 0 5px rgba(74, 144, 226, 0.5); }
+        .btn-primary { background-color: #4a90e2; border-color: #4a90e2; }
+        .btn-primary:hover { background-color: #357abd; border-color: #357abd; }
+        .text-indigo-600 { color: #4a90e2; }
+        .alert-danger { background-color: #f8d7da; border-color: #f5c6cb; }
+        .alert-success { background-color: #d4edda; border-color: #c3e6cb; }
+        .input-group-text { background-color: #f8f9fa; border-color: #dfe6e9; }
     </style>
 </head>
 <body>
@@ -65,11 +44,19 @@
                     <p class="text-gray-500">Tạo tài khoản của bạn</p>
                 </div>
 
+                <!-- Success Messages -->
+                <c:if test="${success != null}">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle"></i> ${success}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </c:if>
+
                 <!-- Error Messages -->
                 <c:if test="${error != null}">
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         <i class="fas fa-exclamation-circle"></i> ${error}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 </c:if>
 
@@ -89,9 +76,7 @@
                     <div class="mb-3">
                         <label for="email" class="form-label">Địa chỉ Email</label>
                         <div class="input-group">
-                                <span class="input-group-text">
-                                    <i class="fas fa-envelope"></i>
-                                </span>
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
                             <input type="email" class="form-control" id="email" name="email" required>
                         </div>
                     </div>
@@ -99,20 +84,18 @@
                     <div class="mb-3">
                         <label for="password" class="form-label">Mật khẩu</label>
                         <div class="input-group">
-                                <span class="input-group-text">
-                                    <i class="fas fa-lock"></i>
-                                </span>
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
                             <input type="password" class="form-control" id="password" name="password" required>
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="role" class="form-label">Loại tài khoản</label>
-                        <select class="form-select" id="role" name="role">
-                            <option value="CUSTOMER">Khách hàng</option>
-                            <option value="ADMIN">Quản trị viên</option>
-                        </select>
-                    </div>
+<%--                    <div class="mb-3">--%>
+<%--                        <label for="role" class="form-label">Loại tài khoản</label>--%>
+<%--                        <select class="form-select" id="role" name="role">--%>
+<%--                            <option value="CUSTOMER">Khách hàng</option>--%>
+<%--                            <option value="ADMIN">Quản trị viên</option>--%>
+<%--                        </select>--%>
+<%--                    </div>--%>
 
                     <button type="submit" class="btn btn-primary w-100 mb-3">
                         <i class="fas fa-user-plus"></i> Tạo tài khoản
@@ -128,7 +111,7 @@
     </div>
 </div>
 
-<script src="/webjars/jquery/jquery.min.js"></script>
-<script src="/webjars/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/webjars/jquery/3.7.0/jquery.min.js"></script>
+<script src="/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

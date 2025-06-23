@@ -45,12 +45,6 @@
                     <a class="nav-link fw-bold text-dark" href="/">Trang chủ</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fw-bold text-dark" href="/products">Keycap bộ <i class="fas fa-angle-down ms-1"></i></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-bold text-dark" href="/products">Bàn phím cơ</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link fw-bold text-dark" href="/products">Mods phím</a>
                 </li>
                 <li class="nav-item">

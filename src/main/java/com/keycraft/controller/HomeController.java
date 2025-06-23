@@ -1,26 +1,22 @@
 package com.keycraft.controller;
 
-import com.keycraft.model.CartItem;
 import com.keycraft.model.Order;
 import com.keycraft.model.Product;
 import com.keycraft.model.User;
 import com.keycraft.repository.UserRepository;
 import com.keycraft.service.CartService;
-import com.keycraft.service.CustomUserDetailsService;
 import com.keycraft.service.OrderService;
 import com.keycraft.service.ProductService;
 import com.keycraft.service.ServiceBookingService;
 
 import jakarta.servlet.http.HttpSession;
 
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -59,7 +55,7 @@ public class HomeController {
 
         model.addAttribute("currentUser", user);
         model.addAttribute("featuredProducts", productService.getFeaturedProducts());
-        
+
      // ← **Thêm dòng này** để badge Cart biết có bao nhiêu item
         Long cartItemCount = cartService.getCartItemCount(user);
         model.addAttribute("cartItemCount", cartItemCount);
@@ -68,7 +64,7 @@ public class HomeController {
     }
 
 
-    
+
     @GetMapping("/products")
     public String products(Model model) {
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -91,7 +87,7 @@ public class HomeController {
         return "products";
     }
 
-    
+
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -127,23 +123,23 @@ public class HomeController {
     }
 
 
-    
+
     @GetMapping("/login")
     public String login(HttpSession session) {
         User currentUser = (User) session.getAttribute("currentUser");
         if (currentUser != null) {
             return "redirect:/";
         }
-        return "login";
+        return "auth/login";
     }
-    
+
     @GetMapping("/signup")
     public String signup(HttpSession session) {
         User currentUser = (User) session.getAttribute("currentUser");
         if (currentUser != null) {
             return "redirect:/";
         }
-        return "signup";
+        return "auth/signup";
     }
 
 }

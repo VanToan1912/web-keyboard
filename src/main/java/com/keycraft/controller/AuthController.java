@@ -33,13 +33,19 @@ public class AuthController {
             redirectAttributes.addFlashAttribute("success", "Account created successfully!");
 
             // Chuyển hướng theo role
-            return userRole == User.UserRole.ADMIN ? "redirect:/admin" : "redirect:/";
+//            return userRole == User.UserRole.ADMIN ? "redirect:/admin" : "redirect:/";
+            return "redirect:/";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Registration failed: " + e.getMessage());
             return "redirect:/signup";
         }
     }
-    
+
+    @GetMapping("/signup")
+    public String signupPage() {
+        return "auth/signup"; // Resolves to /WEB-INF/jsp/auth/signup.jsp
+    }
+
     @PostMapping("/login")
     public String login(@RequestParam String email,
                         @RequestParam String password,
@@ -59,6 +65,11 @@ public class AuthController {
             redirectAttributes.addFlashAttribute("error", "Invalid email or password");
             return "redirect:/login";
         }
+    }
+
+    @GetMapping("/login")
+    public String showLoginPage() {
+        return "auth/login"; // Resolves to /WEB-INF/jsp/auth/login.jsp
     }
 
 
