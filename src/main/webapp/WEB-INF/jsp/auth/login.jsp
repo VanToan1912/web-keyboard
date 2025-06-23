@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập - KeyCraft</title>
+    <title>Đăng nhập</title>
     <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -65,7 +65,7 @@
             <div class="login-card">
                 <div class="text-center mb-4">
                     <h1 class="h3">
-                        <i class="fas fa-keyboard text-indigo-600"></i> KeyCraft
+                        <i class="fas fa-keyboard text-indigo-600"></i> Kibo Store
                     </h1>
                     <p class="text-gray-500">Đăng nhập vào tài khoản của bạn</p>
                 </div>
@@ -112,13 +112,13 @@
                 </form>
 
                 <!-- Test Accounts Info -->
-                <div class="alert alert-info">
-                    <strong>Tài khoản thử nghiệm:</strong><br>
-                    <small>
-                        Quản trị viên: admin@keycraft.com / admin123<br>
-                        Khách hàng: customer@keycraft.com / customer123
-                    </small>
-                </div>
+<%--                <div class="alert alert-info">--%>
+<%--                    <strong>Tài khoản thử nghiệm:</strong><br>--%>
+<%--                    <small>--%>
+<%--                        Quản trị viên: admin@keycraft.com / admin123<br>--%>
+<%--                        Khách hàng: customer@keycraft.com / customer123--%>
+<%--                    </small>--%>
+<%--                </div>--%>
 
                 <div class="text-center">
                     <p class="mb-0">Chưa có tài khoản? <a href="/signup" class="text-indigo-600 text-decoration-none">Đăng ký tại đây</a></p>
