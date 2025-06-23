@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng ký - KeyCraft</title>
+    <title>Đăng ký</title>
     <link href="/webjars/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="/webjars/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <style>
@@ -39,7 +39,7 @@
             <div class="signup-card">
                 <div class="text-center mb-4">
                     <h1 class="h3">
-                        <i class="fas fa-keyboard text-indigo-600"></i> KeyCraft
+                        <i class="fas fa-keyboard text-indigo-600"></i> Kibo Store
                     </h1>
                     <p class="text-gray-500">Tạo tài khoản của bạn</p>
                 </div>

@@ -39,7 +39,7 @@
             <div class="verify-card">
                 <div class="text-center mb-4">
                     <h1 class="h3">
-                        <i class="fas fa-keyboard text-indigo-600"></i> KeyCraft
+                        <i class="fas fa-keyboard text-indigo-600"></i> Kibo Store
                     </h1>
                     <p class="text-gray-500">Xác minh email của bạn</p>
                 </div>

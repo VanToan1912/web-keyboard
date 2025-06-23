@@ -35,17 +35,17 @@
     <!-- Hero Section -->
     <section class="hero-section text-center">
         <div class="container">
-            <h1 class="display-4 mb-4">Premium Mechanical Keyboards</h1>
-            <p class="lead mb-4">Discover the perfect typing experience with our curated collection.</p>
+            <h1 class="display-4 mb-4">Bàn Phím Cơ Cao Cấp</h1>
+            <p class="lead mb-4">Khám Phá Những Trải Nghiệm Tuyệt Hảo Với Bộ Sưu Tập Của Chúng Tôi</p>
             <a href="/products" class="btn btn-light btn-lg">
-                <i class="fas fa-shopping-cart"></i> Shop Now
+                <i class="fas fa-shopping-cart"></i> Mua Ngay
             </a>
         </div>
     </section>
 
     <!-- Sale Product Section (New Products) -->
-    <section class="bg-gray-100 py-5">
-        <div class="container sale-section">
+    <section class="bg-gray-100 py-2">
+        <div class="container sale-section" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 10px;">
             <div class="row">
                 <div class="col-12 text-center mb-4">
                     <h2 class="text-white text-2xl font-bold d-flex align-items-center justify-content-center">
@@ -80,9 +80,9 @@
     </section>
 
     <!-- Featured Products -->
-    <section class="py-5">
-        <div class="container">
-            <h2 class="text-center mb-5">Sản Phẩm Đề Xuất</h2>
+    <section class="py-2">
+        <div class="container" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 10px;">
+            <h2 class="text-center mb-4 mt-4">Sản Phẩm Đề Xuất</h2>
             <div class="row">
                 <c:choose>
                     <c:when test="${not empty featuredProducts}">
@@ -107,10 +107,10 @@
     </section>
 
     <!-- Suggested Products -->
-    <section class="bg-gray-100 py-5">
-        <div class="container ">
+    <section class="bg-gray-100 py-2">
+        <div class="container " style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 10px;">
             <div class="row">
-                <div class="col-12 text-center mb-4">
+                <div class="col-12 text-center mt-4 mb-4">
                     <h2 class="text-2xl font-bold d-flex align-items-center justify-content-center">
                         Sản Phẩm Gợi Ý
                     </h2>
