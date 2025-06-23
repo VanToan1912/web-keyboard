@@ -2,13 +2,13 @@ package com.keycraft.controller;
 
 import com.keycraft.model.User;
 import com.keycraft.service.AuthService;
-import jakarta.servlet.http.HttpSession;
-
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import jakarta.mail.MessagingException;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/auth")
@@ -17,54 +17,80 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
+    @GetMapping("/signup")
+    public String showSignupPage() {
+        return "auth/signup";
+    }
+
+    @GetMapping("/login")
+    public String showLoginPage() {
+        return "auth/login";
+    }
+
     @PostMapping("/signup")
     public String signup(@RequestParam String email,
                          @RequestParam String password,
                          @RequestParam String firstName,
                          @RequestParam String lastName,
                          @RequestParam(defaultValue = "CUSTOMER") String role,
-                         HttpSession session,
                          RedirectAttributes redirectAttributes) {
         try {
             User.UserRole userRole = "ADMIN".equalsIgnoreCase(role) ? User.UserRole.ADMIN : User.UserRole.CUSTOMER;
-            User user = authService.registerUser(email, password, firstName, lastName, userRole);
-
-            session.setAttribute("currentUser", user);
-            redirectAttributes.addFlashAttribute("success", "Account created successfully!");
-
-            // Chuyển hướng theo role
-            return userRole == User.UserRole.ADMIN ? "redirect:/admin" : "redirect:/";
+            authService.registerUser(email, password, firstName, lastName, userRole);
+            redirectAttributes.addFlashAttribute("email", email); // Pass email to verification page
+            redirectAttributes.addFlashAttribute("success", "Account created successfully! Please check your email for the verification code.");
+            return "redirect:/auth/verify-code";
+        } catch (MessagingException e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to send verification email: " + e.getMessage());
+            return "redirect:/signup";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Registration failed: " + e.getMessage());
             return "redirect:/signup";
         }
     }
-    
+
     @PostMapping("/login")
     public String login(@RequestParam String email,
                         @RequestParam String password,
-                        HttpSession session,
                         RedirectAttributes redirectAttributes) {
-         Optional<User> userOpt = authService.authenticateUser(email, password);
-        if (userOpt.isPresent()) {
-            User user = userOpt.get();
-            session.setAttribute("currentUser", user);
-
-            if (User.UserRole.ADMIN.equals(user.getRole())) {
-                return "redirect:/admin";
+        try {
+            Optional<User> userOpt = authService.authenticateUser(email, password);
+            if (userOpt.isPresent()) {
+                return User.UserRole.ADMIN.equals(userOpt.get().getRole()) ? "redirect:/dashboard" : "redirect:/";
             } else {
-                return "redirect:/";
+                redirectAttributes.addFlashAttribute("error", "Invalid email or password");
+                return "redirect:/login";
             }
-        } else {
-            redirectAttributes.addFlashAttribute("error", "Invalid email or password");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/login";
         }
     }
 
-
     @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
+    public String logout() {
         return "redirect:/login?logout=true";
+    }
+
+    @GetMapping("/verify-code")
+    public String showVerifyCodePage(@ModelAttribute("email") String email, RedirectAttributes redirectAttributes) {
+        if (email == null || email.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "No email provided for verification.");
+            return "redirect:/signup";
+        }
+        return "auth/verify-code";
+    }
+
+    @PostMapping("/verify-code")
+    public String verifyCode(@RequestParam String code, @RequestParam String email, RedirectAttributes redirectAttributes) {
+        boolean verified = authService.verifyUser(code);
+        if (verified) {
+            redirectAttributes.addFlashAttribute("success", "Email verified successfully! You can now log in.");
+            return "redirect:/login";
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Invalid verification code.");
+            redirectAttributes.addFlashAttribute("email", email); // Retain email for retry
+            return "redirect:/auth/verify-code";
+        }
     }
 }

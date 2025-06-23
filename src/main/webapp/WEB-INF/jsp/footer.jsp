@@ -6,9 +6,9 @@
             <div class="pb-5">
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
                     <div class="col">
-                        <h3>
+                        <h3 style="text-align: center">
                             <a href="/" title="Kibo">
-                                <img src="<%= request.getContextPath() %>/img/logo.png" alt="Kibo" class="mx-auto img-fluid" style="height: 5rem;" />
+                                <img src="https://res.cloudinary.com/dxlz4iaqu/image/upload/v1750696813/logo_isvtzj.png" alt="Kibo" class="mx-auto img-fluid" style="height: 5rem;" />
                             </a>
                         </h3>
                         <span class="d-block mt-2">HỘ KINH DOANH Kibo</span>

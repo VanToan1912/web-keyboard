@@ -9,7 +9,7 @@
             </div>
             <div>
                 <a href="/" title="Kibo">
-                    <img src="<%= request.getContextPath() %>/img/logo.png" alt="Kibo" style="height: 4.5rem;" />
+                    <img src="https://res.cloudinary.com/dxlz4iaqu/image/upload/v1750696813/logo_isvtzj.png" alt="Kibo" style="height: 4.5rem;" />
                 </a>
             </div>
             <div class="d-flex align-items-center gap-3">
@@ -43,12 +43,6 @@
             <ul class="nav justify-content-center gap-3 text-uppercase">
                 <li class="nav-item">
                     <a class="nav-link fw-bold text-dark" href="/">Trang chủ</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-bold text-dark" href="/products">Keycap bộ <i class="fas fa-angle-down ms-1"></i></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-bold text-dark" href="/products">Bàn phím cơ</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link fw-bold text-dark" href="/products">Mods phím</a>

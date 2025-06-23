@@ -5,50 +5,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng ký - KeyCraft</title>
+    <title>Đăng nhập - KeyCraft</title>
     <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #4a90e2 0%, #6b48cc 100%); /* Màu gradient mới: xanh dương đậm sang tím */
+            background: linear-gradient(135deg, #4a90e2 0%, #6b48cc 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
         }
-        .signup-card {
+        .login-card {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(74, 144, 226, 0.3); /* Shadow với màu xanh dương nhạt */
+            box-shadow: 0 10px 30px rgba(74, 144, 226, 0.3);
             padding: 2rem;
         }
         .form-label {
-            color: #2c3e50; /* Màu chữ nhãn: xám đậm */
+            color: #2c3e50;
         }
         .form-control {
-            border-color: #dfe6e9; /* Viền input màu xám nhạt */
-            background-color: #f8f9fa; /* Nền input màu xám rất nhạt */
+            border-color: #dfe6e9;
+            background-color: #f8f9fa;
         }
         .form-control:focus {
-            border-color: #4a90e2; /* Viền input khi focus: xanh dương */
-            box-shadow: 0 0 5px rgba(74, 144, 226, 0.5); /* Hiệu ứng focus */
+            border-color: #4a90e2;
+            box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
         }
         .btn-primary {
-            background-color: #4a90e2; /* Nút submit màu xanh dương */
+            background-color: #4a90e2;
             border-color: #4a90e2;
         }
         .btn-primary:hover {
-            background-color: #357abd; /* Nút hover màu xanh đậm hơn */
+            background-color: #357abd;
             border-color: #357abd;
         }
         .text-indigo-600 {
-            color: #4a90e2; /* Màu chữ liên kết: xanh dương */
+            color: #4a90e2;
         }
         .alert-danger {
-            background-color: #f8d7da; /* Màu cảnh báo lỗi nhạt hơn */
+            background-color: #f8d7da;
             border-color: #f5c6cb;
         }
+        .alert-info {
+            background-color: #cce5ff;
+            border-color: #b8daff;
+            color: #004085;
+        }
         .input-group-text {
-            background-color: #f8f9fa; /* Nền icon input */
+            background-color: #f8f9fa;
             border-color: #dfe6e9;
         }
     </style>
@@ -56,43 +61,38 @@
 <body>
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
-            <div class="signup-card">
+        <div class="col-md-6 col-lg-4">
+            <div class="login-card">
                 <div class="text-center mb-4">
                     <h1 class="h3">
                         <i class="fas fa-keyboard text-indigo-600"></i> KeyCraft
                     </h1>
-                    <p class="text-gray-500">Tạo tài khoản của bạn</p>
+                    <p class="text-gray-500">Đăng nhập vào tài khoản của bạn</p>
                 </div>
 
                 <!-- Error Messages -->
+                <c:if test="${success != null}">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle"></i> ${success}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </c:if>
                 <c:if test="${error != null}">
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         <i class="fas fa-exclamation-circle"></i> ${error}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 </c:if>
 
-                <!-- Signup Form -->
-                <form action="/auth/signup" method="post">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="firstName" class="form-label">Tên</label>
-                            <input type="text" class="form-control" id="firstName" name="firstName" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="lastName" class="form-label">Họ</label>
-                            <input type="text" class="form-control" id="lastName" name="lastName" required>
-                        </div>
-                    </div>
-
+                <!-- Login Form -->
+                <form action="/auth/login" method="post">
                     <div class="mb-3">
-                        <label for="email" class="form-label">Địa chỉ Email</label>
+                        <label for="username" class="form-label">Địa chỉ Email</label>
                         <div class="input-group">
                                 <span class="input-group-text">
                                     <i class="fas fa-envelope"></i>
                                 </span>
-                            <input type="email" class="form-control" id="email" name="email" required>
+                            <input type="text" class="form-control" id="username" name="username" required>
                         </div>
                     </div>
 
@@ -106,21 +106,22 @@
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="role" class="form-label">Loại tài khoản</label>
-                        <select class="form-select" id="role" name="role">
-                            <option value="CUSTOMER">Khách hàng</option>
-                            <option value="ADMIN">Quản trị viên</option>
-                        </select>
-                    </div>
-
                     <button type="submit" class="btn btn-primary w-100 mb-3">
-                        <i class="fas fa-user-plus"></i> Tạo tài khoản
+                        <i class="fas fa-sign-in-alt"></i> Đăng nhập
                     </button>
                 </form>
 
+                <!-- Test Accounts Info -->
+                <div class="alert alert-info">
+                    <strong>Tài khoản thử nghiệm:</strong><br>
+                    <small>
+                        Quản trị viên: admin@keycraft.com / admin123<br>
+                        Khách hàng: customer@keycraft.com / customer123
+                    </small>
+                </div>
+
                 <div class="text-center">
-                    <p class="mb-0">Đã có tài khoản? <a href="/login" class="text-indigo-600 text-decoration-none">Đăng nhập tại đây</a></p>
+                    <p class="mb-0">Chưa có tài khoản? <a href="/signup" class="text-indigo-600 text-decoration-none">Đăng ký tại đây</a></p>
                     <p class="mt-2"><a href="/" class="text-gray-500 text-decoration-none">← Quay lại trang chủ</a></p>
                 </div>
             </div>
