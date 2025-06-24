@@ -7,9 +7,9 @@
                 <span class="text-muted me-2">HOTLINE TƯ VẤN:</span>
                 <a href="/" class="text-dark fw-bold text-decoration-none">028 3896 6780</a>
             </div>
-            <div>
+            <div style="position: relative; left: -7%; top: 0;">
                 <a href="/" title="Kibo">
-                    <img src="<%= request.getContextPath() %>/img/logo.png" alt="Kibo" style="height: 4.5rem;" />
+                    <img src="https://res.cloudinary.com/dxlz4iaqu/image/upload/v1750696813/logo_isvtzj.png" alt="Kibo" style="height: 4.5rem;" />
                 </a>
             </div>
             <div class="d-flex align-items-center gap-3">
@@ -23,6 +23,7 @@
                     <ul class="dropdown-menu dropdown-menu-end">
                         <c:choose>
                             <c:when test="${not empty currentUser}">
+                                <li><a class="dropdown-item" href="/profile">Thông tin người dùng</a></li>
                                 <li><a class="dropdown-item" href="/orders">Đơn Hàng</a></li>
                                 <li><a class="dropdown-item" href="/auth/logout">Đăng Xuất</a></li>
                             </c:when>
@@ -43,12 +44,6 @@
             <ul class="nav justify-content-center gap-3 text-uppercase">
                 <li class="nav-item">
                     <a class="nav-link fw-bold text-dark" href="/">Trang chủ</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-bold text-dark" href="/products">Keycap bộ <i class="fas fa-angle-down ms-1"></i></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-bold text-dark" href="/products">Bàn phím cơ</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link fw-bold text-dark" href="/products">Mods phím</a>

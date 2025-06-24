@@ -1,20 +1,17 @@
 package com.keycraft.controller;
 
-import com.keycraft.model.CartItem;
 import com.keycraft.model.Order;
 import com.keycraft.model.Product;
 import com.keycraft.model.User;
 import com.keycraft.repository.OrderRepository;
 import com.keycraft.repository.UserRepository;
 import com.keycraft.service.CartService;
-import com.keycraft.service.CustomUserDetailsService;
 import com.keycraft.service.OrderService;
 import com.keycraft.service.ProductService;
 import com.keycraft.service.ServiceBookingService;
 
 import jakarta.servlet.http.HttpSession;
 
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -48,30 +45,27 @@ public class HomeController {
     @GetMapping("/index")
     public String index(Model model) {
         var auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = null;
 
-        if (auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
-            return "redirect:/login";
+        if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
+            String email = auth.getName();
+            user = userRepository.findByEmail(email).orElse(null);
         }
 
-        String email = auth.getName();
-        User user = userRepository.findByEmail(email).orElse(null);
-
-        if (user == null) {
-            return "redirect:/login";
+        if (user != null) {
+            model.addAttribute("currentUser", user);
+            model.addAttribute("cartItemCount", cartService.getCartItemCount(user));
+        } else {
+            model.addAttribute("cartItemCount", 0L);
         }
 
-        model.addAttribute("currentUser", user);
         model.addAttribute("featuredProducts", productService.getFeaturedProducts());
-        
-     // ← **Thêm dòng này** để badge Cart biết có bao nhiêu item
-        Long cartItemCount = cartService.getCartItemCount(user);
-        model.addAttribute("cartItemCount", cartItemCount);
+        model.addAttribute("newProducts", productService.getNewProducts());
+        model.addAttribute("suggestedProducts", productService.getSuggestedProducts());
 
         return "index";
     }
 
-
-    
     @GetMapping("/products")
     public String products(Model model) {
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -94,7 +88,6 @@ public class HomeController {
         return "products";
     }
 
-    
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -115,13 +108,13 @@ public class HomeController {
             return "redirect:/login?error=access_denied";
         }
 
-        // Add attribute for dashboard tabs
         model.addAttribute("currentUser", user);
         model.addAttribute("products", productService.getAllProducts());
         model.addAttribute("users", userRepository.findAll());
         model.addAttribute("orders", orderService.getAllOrders());
         model.addAttribute("orderStatuses", Order.OrderStatus.values());
         model.addAttribute("services", serviceBookingService.findAll());
+
         model.addAttribute("revenueByDay", revenueByDay);
         model.addAttribute("revenueByCategory", revenueByCategory);
         model.addAttribute("currentMonth", LocalDate.now().getMonthValue());
@@ -138,24 +131,21 @@ public class HomeController {
         return "dashboard";
     }
 
-
-    
     @GetMapping("/login")
     public String login(HttpSession session) {
         User currentUser = (User) session.getAttribute("currentUser");
         if (currentUser != null) {
             return "redirect:/";
         }
-        return "login";
+        return "auth/login";
     }
-    
+
     @GetMapping("/signup")
     public String signup(HttpSession session) {
         User currentUser = (User) session.getAttribute("currentUser");
         if (currentUser != null) {
             return "redirect:/";
         }
-        return "signup";
+        return "auth/signup";
     }
-
 }
