@@ -19,7 +19,7 @@
             <p class="text-muted small">${param.brand}</p>
             <div>
                 <div class="d-flex justify-content-between align-items-center">
-                    <span class="h5 text-primary">
+                    <span class="h5 text-primary" style="margin: auto">
                         <fmt:formatNumber value="${param.price}" pattern="#,###" />₫
                     </span>
 <%--                    <small class="text-success">--%>
@@ -27,7 +27,7 @@
 <%--                    </small>--%>
                 </div>
                 <c:if test="${not empty param.switchType}">
-                    <small class="text-muted d-block">
+                    <small class="text-muted d-block mt-1">
                         <i class="fas fa-cog"></i> ${param.switchType} switches
                     </small>
                 </c:if>

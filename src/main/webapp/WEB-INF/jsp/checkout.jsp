@@ -48,11 +48,11 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="city" class="form-label">Thành Phố</label>
+                                <label for="city" class="form-label">Quận</label>
                                 <input type="text" class="form-control" id="city" required>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <label for="state" class="form-label">Quận</label>
+                                <label for="state" class="form-label">Thành Phố</label>
                                 <select class="form-control" id="state" required>
                                     <option value="">Chọn</option>
                                     <option value="HCM">Hồ Chí Minh</option>

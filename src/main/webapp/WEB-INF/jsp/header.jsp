@@ -14,7 +14,7 @@
             </div>
             <div class="d-flex align-items-center gap-3">
                 <c:if test="${currentUser != null && currentUser.role == 'ADMIN'}">
-                    <a class="nav-link nav-item" href="/dashboard">Admin Panel</a>
+                    <a class="nav-link nav-item" href="/dashboard"><i class="fas fa-store"></i> Admin Panel</a>
                 </c:if>
                 <div class="dropdown">
                     <a href="#" class="text-dark text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false">
