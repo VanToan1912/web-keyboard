@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đơn hàng #${order.id} - KeyCraft</title>
+    <title>Đơn hàng - KeyCraft</title>
     <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -15,31 +15,67 @@
             border-color: #e9ecef;
             background-color: #ffffff;
         }
+
         .card-header {
             background-color: #f8f9fa;
             border-bottom-color: #e9ecef;
         }
+
         .badge {
             font-weight: 600;
             padding: 0.4em 0.8em;
         }
-        .badge.bg-warning { background-color: #ffc107; color: #212529; }
-        .badge.bg-success { background-color: #28a745; color: #ffffff; }
-        .badge.bg-info { background-color: #17a2b8; color: #ffffff; }
-        .badge.bg-primary { background-color: #0066cc; color: #ffffff; }
-        .badge.bg-danger { background-color: #dc3545; color: #ffffff; }
-        .text-muted { color: #6c757d !important; }
+
+        .badge.bg-warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+        .badge.bg-success {
+            background-color: #28a745;
+            color: #ffffff;
+        }
+
+        .badge.bg-info {
+            background-color: #17a2b8;
+            color: #ffffff;
+        }
+
+        .badge.bg-primary {
+            background-color: #0066cc;
+            color: #ffffff;
+        }
+
+        .badge.bg-danger {
+            background-color: #dc3545;
+            color: #ffffff;
+        }
+
+        .text-muted {
+            color: #6c757d !important;
+        }
+
         .btn-outline-secondary {
             color: #6c757d;
             border-color: #6c757d;
         }
+
         .btn-outline-secondary:hover {
             background-color: #6c757d;
             color: #ffffff;
         }
-        strong { color: #333333; }
-        .order-summary .d-flex { color: #495057; }
-        .order-summary .d-flex strong { color: #0066cc; }
+
+        strong {
+            color: #333333;
+        }
+
+        .order-summary .d-flex {
+            color: #495057;
+        }
+
+        .order-summary .d-flex strong {
+            color: #0066cc;
+        }
     </style>
 </head>
 <body>
@@ -49,7 +85,7 @@
 <!-- Nội dung chi tiết đơn hàng -->
 <div class="container my-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="fas fa-receipt text-primary"></i> Đơn hàng #${order.id}</h2>
+        <h2><i class="fas fa-receipt text-primary"></i> Đơn hàng</h2>
         <a href="/orders" class="btn btn-outline-secondary">
             <i class="fas fa-arrow-left"></i> Quay lại danh sách đơn hàng
         </a>
@@ -66,7 +102,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <strong>Ngày đặt hàng:</strong><br>
-                            <fmt:formatDate value="${createdAtDate}" pattern="MMM dd, yyyy 'lúc' HH:mm" />
+                            <fmt:formatDate value="${createdAtDate}" pattern="MMM dd, yyyy 'lúc' HH:mm"/>
                         </div>
                         <div class="col-md-6">
                             <strong>Trạng thái:</strong><br>
@@ -80,13 +116,15 @@
                                 <c:when test="${order.status == 'SHIPPED'}">
                                     <span class="badge bg-info">Đang giao</span>
                                     <c:if test="${not empty order.trackingCode}">
-                                        <div class="mt-1 text-muted">Mã theo dõi: <code>${order.trackingCode}</code></div>
+                                        <div class="mt-1 text-muted">Mã theo dõi: <code>${order.trackingCode}</code>
+                                        </div>
                                     </c:if>
                                 </c:when>
                                 <c:when test="${order.status == 'DELIVERED'}">
                                     <span class="badge bg-primary">Đã giao</span>
                                     <c:if test="${not empty order.trackingCode}">
-                                        <div class="mt-1 text-muted">Mã theo dõi: <code>${order.trackingCode}</code></div>
+                                        <div class="mt-1 text-muted">Mã theo dõi: <code>${order.trackingCode}</code>
+                                        </div>
                                     </c:if>
                                 </c:when>
                                 <c:when test="${order.status == 'CANCELLED'}">
@@ -113,7 +151,7 @@
                                 <img src="${item.product.imageUrl}" alt="${item.product.name}"
                                      class="img-fluid rounded" style="height: 80px; object-fit: cover;">
                             </div>
-                            <div class="col-md-5">
+                            <div class="col-md-4">
                                 <h6 class="mb-1 text-dark">${item.product.name}</h6>
                                 <small class="text-muted">${item.product.brand}</small>
                                 <c:if test="${item.product.switchType != null}">
@@ -124,10 +162,10 @@
                                 <strong>Số lượng: ${item.quantity}</strong>
                             </div>
                             <div class="col-md-2 text-center">
-                                <strong>$${item.unitPrice}</strong>
+                                <strong><fmt:formatNumber value="${item.unitPrice}" pattern="#,###"/>đ</strong>
                             </div>
-                            <div class="col-md-1 text-end">
-                                <strong>$${item.totalPrice}</strong>
+                            <div class="col-md-2 text-end">
+                                <strong><fmt:formatNumber value="${item.totalPrice}" pattern="#,###"/>đ</strong>
                             </div>
                         </div>
                     </c:forEach>
@@ -165,15 +203,14 @@
                 <div class="card-header">
                     <h5><i class="fas fa-calculator text-primary"></i> Tóm tắt đơn hàng</h5>
                 </div>
-                <div class="card-body">
-                    <c:set var="subtotal" value="0" />
+                <div class="card-body"><c:set var="subtotal" value="0"/>
                     <c:forEach items="${order.orderItems}" var="item">
-                        <c:set var="subtotal" value="${subtotal + item.totalPrice}" />
+                        <c:set var="subtotal" value="${subtotal + item.totalPrice}"/>
                     </c:forEach>
 
                     <div class="d-flex justify-content-between mb-2">
                         <span>Tạm tính:</span>
-                        <span>$${subtotal}</span>
+                        <span><fmt:formatNumber value="${subtotal}" pattern="#,###"/>đ</span>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
                         <span>Phí vận chuyển:</span>
@@ -181,12 +218,12 @@
                     </div>
                     <div class="d-flex justify-content-between mb-2">
                         <span>Thuế:</span>
-                        <span>$0.00</span>
+                        <span><fmt:formatNumber value="0" pattern="#,###"/>đ</span>
                     </div>
                     <hr>
                     <div class="d-flex justify-content-between">
                         <strong>Tổng cộng:</strong>
-                        <strong>$${order.totalAmount}</strong>
+                        <strong><fmt:formatNumber value="${order.totalAmount}" pattern="#,###"/>đ</strong>
                     </div>
                 </div>
             </div>

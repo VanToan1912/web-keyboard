@@ -73,7 +73,7 @@
                             <div class="card-header">
                                 <div class="row align-items-center">
                                     <div class="col-md-6">
-                                        <h6 class="mb-0">Đơn hàng #${order.id}</h6>
+                                        <h6 class="mb-0">Đơn hàng</h6>
                                         <small class="text-muted">
                                             <fmt:formatDate value="${order.createdAtDate}" pattern="MMM dd, yyyy 'lúc' HH:mm" />
                                         </small>

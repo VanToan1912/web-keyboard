@@ -62,18 +62,18 @@
 
             <div class="cart-quantity">
               <button class="btn btn-sm" onclick="removeFromCart('${item.id}')">
-                <i class="fas fa-trash"></i>
+                <i class="fas fa-trash"></i></button>
               <button class="btn btn-outline-secondary" type="button" onclick="changeQuantity(this, -1)"
-                      data-cart-item-id="${item.id}" ${item.quantity <= 1 ? 'disabled' : ''}>-</button>
+                      data-cart-item-id="${item.id}" ${item.quantity <= 1 ? 'disabled' : 'enabled'}>-</button>
               <input type="number" id="input-${item.id}" class="form-control text-center"
                      value="${not empty item.quantity ? item.quantity : 1}" min="1" max="10" data-product-price="${item.product.price}"
                      onchange="changeQuantity(this, 0)" readonly />
               <button class="btn btn-outline-secondary" type="button" onclick="changeQuantity(this, 1)"
-                      data-cart-item-id="${item.id}" ${item.quantity >= 10 ? 'disabled' : ''}>+</button>
+                      data-cart-item-id="${item.id}" ${item.quantity >= 10 ? 'disabled' : 'enabled'}>+</button>
             </div>
           </div>
-          <button class="btn btn-outline-secondary w-100 mt-2" onclick="clearCart()">Xoá tất cả sản phẩm</button>
         </c:forEach>
+          <button class="btn btn-outline-secondary w-100 mt-2" onclick="clearCart()">Xoá tất cả sản phẩm</button>
       </div>
 
       <div class="cart-summary">

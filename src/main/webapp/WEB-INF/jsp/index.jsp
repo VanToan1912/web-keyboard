@@ -15,13 +15,21 @@
             color: white;
             padding: 100px 0;
         }
-        .product-card { transition: transform 0.3s; }
-        .product-card:hover { transform: translateY(-5px); }
+
+        .product-card {
+            transition: transform 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
         .carousel-inner img {
             width: 100%;
             height: 400px;
             object-fit: cover;
         }
+
         .sale-section {
             background: linear-gradient(to bottom, #eac160, #ff1212);
             padding: 20px;
@@ -29,141 +37,143 @@
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <%@ include file="header.jsp" %>
+<!-- Navigation -->
+<%@ include file="header.jsp" %>
 
-    <!-- Hero Section -->
-    <section class="hero-section text-center">
-        <div class="container">
-            <h1 class="display-4 mb-4">Bàn Phím Cơ Cao Cấp</h1>
-            <p class="lead mb-4">Khám Phá Những Trải Nghiệm Tuyệt Hảo Với Bộ Sưu Tập Của Chúng Tôi</p>
-            <a href="/products" class="btn btn-light btn-lg">
-                <i class="fas fa-shopping-cart"></i> Mua Ngay
-            </a>
-        </div>
-    </section>
+<!-- Hero Section -->
+<section class="hero-section text-center">
+    <div class="container">
+        <h1 class="display-4 mb-4">Bàn Phím Cơ Cao Cấp</h1>
+        <p class="lead mb-4">Khám Phá Những Trải Nghiệm Tuyệt Hảo Với Bộ Sưu Tập Của Chúng Tôi</p>
+        <a href="/products" class="btn btn-light btn-lg">
+            <i class="fas fa-shopping-cart"></i> Mua Ngay
+        </a>
+    </div>
+</section>
 
-    <!-- Sale Product Section (New Products) -->
-    <section class="bg-gray-100 py-2">
-        <div class="container sale-section" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 10px;">
-            <div class="row">
-                <div class="col-12 text-center mb-4">
-                    <h2 class="text-white text-2xl font-bold d-flex align-items-center justify-content-center">
-                        <img src="https://bizweb.dktcdn.net/100/436/596/themes/980306/assets/flash.png?1746716722609" alt="FLASH SALE" width="32" height="32" class="me-2" />
-                        Sản Phẩm Mới
-                    </h2>
-                </div>
-                <div class="col-12">
-                    <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-4 g-4">
-                        <c:choose>
-                            <c:when test="${not empty newProducts}">
-                                <c:forEach items="${newProducts}" var="product">
-                                    <div class="col">
-                                        <jsp:include page="productCard.jsp">
-                                            <jsp:param name="title" value="${product.name}" />
-                                            <jsp:param name="price" value="${product.price}"/>
-                                            <jsp:param name="image" value="${product.imageUrl}" />
-                                            <jsp:param name="url" value="/product/${product.id}" />
-                                            <jsp:param name="id" value="${product.id}" />
-                                        </jsp:include>
-                                    </div>
-                                </c:forEach>
-                            </c:when>
-                            <c:otherwise>
-                                <div class="text-center">No new products available.</div>
-                            </c:otherwise>
-                        </c:choose>
-                    </div>
-                </div>
+<!-- Sale Product Section (New Products) -->
+<section class="bg-gray-100 py-2">
+    <div class="container sale-section" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 10px;">
+        <div class="row">
+            <div class="col-12 text-center mb-4">
+                <h2 class="text-white text-2xl font-bold d-flex align-items-center justify-content-center">
+                    <img src="https://bizweb.dktcdn.net/100/436/596/themes/980306/assets/flash.png?1746716722609"
+                         alt="FLASH SALE" width="32" height="32" class="me-2"/>
+                    Sản Phẩm Mới
+                </h2>
             </div>
-        </div>
-    </section>
-
-    <!-- Featured Products -->
-    <section class="py-2">
-        <div class="container" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 10px;">
-            <h2 class="text-center mb-4 mt-4">Sản Phẩm Đề Xuất</h2>
-            <div class="row">
-                <c:choose>
-                    <c:when test="${not empty featuredProducts}">
-                        <c:forEach items="${featuredProducts}" var="product">
-                            <div class="col-md-3 mb-4">
-                                <jsp:include page="productCard.jsp">
-                                    <jsp:param name="title" value="${product.name}" />
-                                    <jsp:param name="price" value="${product.price}"/>
-                                    <jsp:param name="image" value="${product.imageUrl}" />
-                                    <jsp:param name="url" value="/product/${product.id}" />
-                                    <jsp:param name="id" value="${product.id}" />
-                                </jsp:include>
-                            </div>
-                        </c:forEach>
-                    </c:when>
-                    <c:otherwise>
-                        <div class="text-center">No featured products available.</div>
-                    </c:otherwise>
-                </c:choose>
-            </div>
-        </div>
-    </section>
-
-    <!-- Suggested Products -->
-    <section class="bg-gray-100 py-2">
-        <div class="container " style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 10px;">
-            <div class="row">
-                <div class="col-12 text-center mt-4 mb-4">
-                    <h2 class="text-2xl font-bold d-flex align-items-center justify-content-center">
-                        Sản Phẩm Gợi Ý
-                    </h2>
-                </div>
-                <div class="col-12">
-                    <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-4 g-4">
-                        <c:choose>
-                            <c:when test="${not empty suggestedProducts}">
-                                <c:forEach items="${suggestedProducts}" var="product">
-                                    <div class="col">
-                                        <jsp:include page="productCard.jsp">
-                                            <jsp:param name="title" value="${product.name}" />
-                                            <jsp:param name="price" value="${product.price}"/>
-                                            <jsp:param name="image" value="${product.imageUrl}" />
-                                            <jsp:param name="url" value="/product/${product.id}" />
-                                            <jsp:param name="id" value="${product.id}" />
-                                        </jsp:include>
-                                    </div>
-                                </c:forEach>
-                            </c:when>
-                            <c:otherwise>
-                                <div class="text-center">No suggested products available.</div>
-                            </c:otherwise>
-                        </c:choose>
-                    </div>
+            <div class="col-12">
+                <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-4 g-4">
+                    <c:choose>
+                        <c:when test="${not empty newProducts}">
+                            <c:forEach items="${newProducts}" var="product">
+                                <div class="col">
+                                    <jsp:include page="productCard.jsp">
+                                        <jsp:param name="title" value="${product.name}"/>
+                                        <jsp:param name="price" value="${product.price}"/>
+                                        <jsp:param name="image" value="${product.imageUrl}"/>
+                                        <jsp:param name="url" value="/product/${product.id}"/>
+                                        <jsp:param name="id" value="${product.id}"/>
+                                    </jsp:include>
+                                </div>
+                            </c:forEach>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="text-center">No new products available.</div>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Toast Notification -->
-    <div class="toast-container position-fixed bottom-0 end-0 p-3">
-        <div id="notification-toast" class="toast" role="alert">
-            <div class="toast-header">
-                <strong class="me-auto">KeyCraft</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-            </div>
-            <div class="toast-body" id="toast-message"></div>
         </div>
     </div>
+</section>
 
-    <!-- Footer -->
-    <%@ include file="footer.jsp" %>
+<!-- Featured Products -->
+<section class="py-2">
+    <div class="container" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 10px;">
+        <h2 class="text-center mb-4 mt-4">Sản Phẩm Đề Xuất</h2>
+        <div class="row">
+            <c:choose>
+                <c:when test="${not empty featuredProducts}">
+                    <c:forEach begin="0" end="3" var="i">
+                        <c:set var="product" value="${featuredProducts[i]}"/>
+                        <div class="col-md-3 mb-4">
+                            <jsp:include page="productCard.jsp">
+                                <jsp:param name="title" value="${product.name}"/>
+                                <jsp:param name="price" value="${product.price}"/>
+                                <jsp:param name="image" value="${product.imageUrl}"/>
+                                <jsp:param name="url" value="/product/${product.id}"/>
+                                <jsp:param name="id" value="${product.id}"/>
+                            </jsp:include>
+                        </div>
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>
+                    <div class="text-center">No featured products available.</div>
+                </c:otherwise>
+            </c:choose>
+        </div>
+    </div>
+</section>
 
-    <script src="/webjars/jquery/3.7.0/jquery.min.js"></script>
-    <script src="/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function addToCart(productId, quantity) {
-            fetch('/cart/add', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ productId, quantity })
-            })
+<!-- Suggested Products -->
+<section class="bg-gray-100 py-2">
+    <div class="container " style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 10px;">
+        <div class="row">
+            <div class="col-12 text-center mt-4 mb-4">
+                <h2 class="text-2xl font-bold d-flex align-items-center justify-content-center">
+                    Sản Phẩm Gợi Ý
+                </h2>
+            </div>
+            <div class="col-12">
+                <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-4 g-4">
+                    <c:choose>
+                        <c:when test="${not empty suggestedProducts}">
+                            <c:forEach items="${suggestedProducts}" var="product">
+                                <div class="col">
+                                    <jsp:include page="productCard.jsp">
+                                        <jsp:param name="title" value="${product.name}"/>
+                                        <jsp:param name="price" value="${product.price}"/>
+                                        <jsp:param name="image" value="${product.imageUrl}"/>
+                                        <jsp:param name="url" value="/product/${product.id}"/>
+                                        <jsp:param name="id" value="${product.id}"/>
+                                    </jsp:include>
+                                </div>
+                            </c:forEach>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="text-center">No suggested products available.</div>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Toast Notification -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="notification-toast" class="toast" role="alert">
+        <div class="toast-header">
+            <strong class="me-auto">KeyCraft</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-body" id="toast-message"></div>
+    </div>
+</div>
+
+<!-- Footer -->
+<%@ include file="footer.jsp" %>
+
+<script src="/webjars/jquery/3.7.0/jquery.min.js"></script>
+<script src="/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    function addToCart(productId, quantity) {
+        fetch('/cart/add', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: new URLSearchParams({productId, quantity})
+        })
             .then(r => r.json())
             .then(json => {
                 if (json.success) {
@@ -174,33 +184,34 @@
                 }
             })
             .catch(() => showToast('Error adding to cart', 'error'));
-        }
+    }
 
-        function refreshCartCount() {
-            fetch('/cart/count')
-                .then(r => r.json())
-                .then(j => {
-                    const cnt = j.cartItemCount || 0;
-                    const el = document.getElementById('cart-count');
-                    if (el) {
-                        el.textContent = cnt;
-                        el.style.display = cnt > 0 ? 'inline-block' : 'none';
-                    }
-                })
-                .catch(() => {});
-        }
+    function refreshCartCount() {
+        fetch('/cart/count')
+            .then(r => r.json())
+            .then(j => {
+                const cnt = j.cartItemCount || 0;
+                const el = document.getElementById('cart-count');
+                if (el) {
+                    el.textContent = cnt;
+                    el.style.display = cnt > 0 ? 'inline-block' : 'none';
+                }
+            })
+            .catch(() => {
+            });
+    }
 
-        function showToast(msg, type) {
-            const toastEl = document.createElement('div');
-            toastEl.className = 'toast align-items-center text-white ' + (type === 'success' ? 'bg-success' : 'bg-danger') + ' border-0';
-            toastEl.role = 'alert';
-            toastEl.innerHTML = `
+    function showToast(msg, type) {
+        const toastEl = document.createElement('div');
+        toastEl.className = 'toast align-items-center text-white ' + (type === 'success' ? 'bg-success' : 'bg-danger') + ' border-0';
+        toastEl.role = 'alert';
+        toastEl.innerHTML = `
                 <div class="toast-body">${msg}</div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
             `;
-            document.body.append(toastEl);
-            new bootstrap.Toast(toastEl, { delay: 2000 }).show();
-        }
-    </script>
+        document.body.append(toastEl);
+        new bootstrap.Toast(toastEl, {delay: 2000}).show();
+    }
+</script>
 </body>
 </html>
