@@ -24,14 +24,15 @@ public class Order {
     private List<OrderItem> orderItems = new ArrayList<>();
 
     @NotNull
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(name = "total_amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal totalAmount;
+
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus status = OrderStatus.PENDING;
 
-    @Column(nullable = false)
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
