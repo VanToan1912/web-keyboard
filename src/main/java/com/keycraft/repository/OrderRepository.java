@@ -40,4 +40,35 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
 	void deleteAllByUserIdAndStatus(Long id, OrderStatus cancelled);
 
+	@Query(value = """
+		    SELECT
+		      DATE_FORMAT(o.created_at, :format) AS period,
+           IFNULL(SUM(o.total_amount), 0) AS revenue
+		    FROM orders o
+		    WHERE o.status != 'CANCELLED'
+		      AND MONTH(o.created_at) = :month
+		      AND YEAR(o.created_at)  = :year
+		    GROUP BY period
+		    ORDER BY period
+		""", nativeQuery = true)
+		List<Object[]> getRevenueByPeriod(
+		    @Param("format") String format,
+		    @Param("month")  int month,
+		    @Param("year")   int year
+		);
+
+		@Query(value = """
+			    SELECT 
+			        p.category AS category,
+			        SUM(oi.subtotal) AS revenue
+			    FROM order_items oi
+			    JOIN products p ON oi.product_id = p.id
+			    JOIN orders o ON oi.order_id = o.id
+			    WHERE o.status != 'CANCELLED'
+			      AND MONTH(o.created_at) = :month
+			      AND YEAR(o.created_at) = :year
+			    GROUP BY p.category
+			""", nativeQuery = true)
+			List<Object[]> getRevenueByCategory(@Param("month") int month, @Param("year") int year);
+
 }

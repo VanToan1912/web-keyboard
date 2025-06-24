@@ -1,5 +1,6 @@
 package com.keycraft.service;
 
+import com.keycraft.dto.CategoryRevenueDTO;
 import com.keycraft.model.*;
 import com.keycraft.model.Order.OrderStatus;
 import com.keycraft.repository.OrderRepository;
@@ -114,4 +115,12 @@ public class OrderService {
     public List<Order> getOrdersByStatus(Order.OrderStatus status) {
         return orderRepository.findByStatus(status);
     }
+
+    public List<CategoryRevenueDTO> getCategoryRevenue(int month, int year) {
+        List<Object[]> results = orderRepository.getRevenueByCategory(month, year);
+        return results.stream()
+            .map(row -> new CategoryRevenueDTO((String) row[0], (BigDecimal) row[1]))
+            .toList();
+    }
+
 }
