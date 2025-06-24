@@ -83,7 +83,7 @@
 
                 <div class="text-center">
                     <p class="mb-0"><a href="/login" class="text-indigo-600 text-decoration-none">Quay lại đăng nhập</a></p>
-                    <p class="mt-2"><a href="/" class="text-gray-500 text-decoration-none">← Quay lại trang chủ</a></p>
+<%--                    <p class="mt-2"><a href="/" class="text-gray-500 text-decoration-none">← Quay lại trang chủ</a></p>--%>
                 </div>
             </div>
         </div>

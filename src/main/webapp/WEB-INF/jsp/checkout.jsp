@@ -16,23 +16,23 @@
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-8">
-            <h2><i class="fas fa-credit-card"></i> Checkout</h2>
+            <h2><i class="fas fa-credit-card"></i> Thanh Toán</h2>
 
             <!-- Billing Information -->
             <div class="card">
                 <div class="card-header">
-                    <h5>Billing Information</h5>
+                    <h5>Thông Tin Thanh Toán</h5>
                 </div>
                 <div class="card-body">
                     <form id="checkout-form">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="firstName" class="form-label">First Name</label>
+                                <label for="firstName" class="form-label">Tên</label>
                                 <input type="text" class="form-control" id="firstName"
                                        value="${not empty user ? user.firstName : ''}" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="lastName" class="form-label">Last Name</label>
+                                <label for="lastName" class="form-label">Họ</label>
                                 <input type="text" class="form-control" id="lastName"
                                        value="${not empty user ? user.lastName : ''}" required>
                             </div>
@@ -43,25 +43,25 @@
                                    value="${not empty user ? user.email : ''}" required>
                         </div>
                         <div class="mb-3">
-                            <label for="address" class="form-label">Address</label>
+                            <label for="address" class="form-label">Địa Chỉ</label>
                             <input type="text" class="form-control" id="address" placeholder="123 Main St" required>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="city" class="form-label">City</label>
+                                <label for="city" class="form-label">Thành Phố</label>
                                 <input type="text" class="form-control" id="city" required>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <label for="state" class="form-label">State</label>
+                                <label for="state" class="form-label">Quận</label>
                                 <select class="form-control" id="state" required>
-                                    <option value="">Select State</option>
-                                    <option value="CA">California</option>
-                                    <option value="NY">New York</option>
-                                    <option value="TX">Texas</option>
+                                    <option value="">Chọn</option>
+                                    <option value="HCM">Hồ Chí Minh</option>
+                                    <option value="HN">Hà Nội</option>
+                                    <option value="DN">Đà Nẵng</option>
                                 </select>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <label for="zip" class="form-label">ZIP Code</label>
+                                <label for="zip" class="form-label">Mã ZIP</label>
                                 <input type="text" class="form-control" id="zip" required>
                             </div>
                         </div>
@@ -71,28 +71,28 @@
 
             <!-- Payment Information -->
             <div class="card mt-4">
-                <div class="card-header"><h5>Payment Information</h5></div>
+                <div class="card-header"><h5>Thông Tin Thẻ</h5></div>
                 <div class="card-body">
-                    <div class="alert alert-info"><i class="fas fa-info-circle"></i> This is a demo. No real payment.</div>
+                    <div class="alert alert-info"><i class="fas fa-info-circle"></i> Đây Chỉ Là Demo</div>
                     <form id="payment-form">
                         <div class="mb-3">
-                            <label for="cardNumber" class="form-label">Card Number</label>
+                            <label for="cardNumber" class="form-label">Mã Thẻ</label>
                             <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
                         </div>
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label for="expiryMonth" class="form-label">Expiry Month</label>
+                                <label for="expiryMonth" class="form-label">Tháng Hết Hạn</label>
                                 <select class="form-control" id="expiryMonth">
-                                    <option value="">Month</option>
+                                    <option value="">Tháng</option>
                                     <c:forEach begin="1" end="12" var="month">
                                         <option value="${month}">${month}</option>
                                     </c:forEach>
                                 </select>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="expiryYear" class="form-label">Expiry Year</label>
+                                <label for="expiryYear" class="form-label">Năm Hết Hạn</label>
                                 <select class="form-control" id="expiryYear">
-                                    <option value="">Year</option>
+                                    <option value="">Năm</option>
                                     <c:forEach begin="2024" end="2034" var="year">
                                         <option value="${year}">${year}</option>
                                     </c:forEach>
@@ -111,12 +111,12 @@
         <!-- Order Summary -->
         <div class="col-md-4">
             <div class="card">
-                <div class="card-header"><h5>Order Summary</h5></div>
+                <div class="card-header"><h5>Chi Tiết Đơn Hàng</h5></div>
                 <div class="card-body">
                     <div id="order-summary"><!-- Loaded by JS --></div>
                     <div class="d-grid">
                         <button class="btn btn-success btn-lg" onclick="processOrder()">
-                            <i class="fas fa-lock"></i> Place Order
+                            <i class="fas fa-lock"></i> Đặt Hàng
                         </button>
                     </div>
                 </div>
@@ -133,7 +133,7 @@
         <div class="modal-content">
             <div class="modal-body text-center">
                 <div class="spinner-border text-primary" role="status"></div>
-                <p class="mt-3">Processing your order...</p>
+                <p class="mt-3">Xử Lý Đơn Hàng...</p>
             </div>
         </div>
     </div>
@@ -143,7 +143,7 @@
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
     <div id="notification-toast" class="toast" role="alert">
         <div class="toast-header">
-            <strong class="me-auto">KeyCraft</strong>
+            <strong class="me-auto">Kibo Store</strong>
             <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
         </div>
         <div class="toast-body" id="toast-message"></div>

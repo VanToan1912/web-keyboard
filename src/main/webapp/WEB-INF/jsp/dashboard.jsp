@@ -7,7 +7,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">  
+  <meta charset="UTF-8">
   <title>Dashboard - KeyCraft</title>
   <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -20,7 +20,7 @@
     <div class="navbar-nav ms-auto d-flex flex-row gap-3">
       <a class="nav-link text-white" href="/"><i class="fas fa-store"></i> Back to Store</a>
       <a class="nav-link text-white" href="/auth/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
-      
+
     </div>
   </div>
 </nav>
@@ -48,7 +48,7 @@
     <i class="fas fa-plus"></i> Add User
   </button>
 </div>
-  
+
   <div class="table-responsive">
     <table class="table table-striped">
       <thead>
@@ -135,7 +135,7 @@
   </div>
 </div>
 
-        
+
           <thead>
 <tr>
 <th>Image</th><th>Name</th><th>Brand</th><th>Price</th>
@@ -147,7 +147,7 @@
                 <td><img src="${p.imageUrl}" alt="${p.name}" style="width:50px;height:50px;object-fit:cover;" class="rounded"></td>
 <td>${p.name}</td>
 <td>${p.brand}</td>
-<td>$${p.price}</td>
+<td>${p.price}đ</td>
 <td>
   <c:choose>
     <c:when test="${p.stock > 10}">
@@ -202,11 +202,11 @@
     </div>
 
     <!-- Orders -->
-    
+
     <!-- Orders Tab Content -->
     <div class="tab-pane fade" id="orders">
           <h4><i class="fas fa-receipt"></i> Order Management</h4>
-    
+
           <!-- Filters -->
       <div class="row mb-3">
         <div class="col-md-4">
@@ -259,17 +259,17 @@
           </c:forEach>
         </select>
       </td>
-      <td class="order-total">$${o.totalAmount}</td>
+      <td class="order-total">${o.totalAmount}đ</td>
       <td>
         <c:choose>
           <c:when test="${o.status != 'SHIPPED'}">
-            <input type="text" class="form-control form-control-sm tracking-input" 
-                   data-id="${o.id}" value="${o.trackingCode}" 
+            <input type="text" class="form-control form-control-sm tracking-input"
+                   data-id="${o.id}" value="${o.trackingCode}"
                    placeholder="Tracking code" disabled/>
           </c:when>
           <c:otherwise>
-            <input type="text" class="form-control form-control-sm tracking-input" 
-                   data-id="${o.id}" value="${o.trackingCode}" 
+            <input type="text" class="form-control form-control-sm tracking-input"
+                   data-id="${o.id}" value="${o.trackingCode}"
                    placeholder="Tracking code"/>
           </c:otherwise>
         </c:choose>
@@ -289,7 +289,7 @@
       </table>
     </div>
 
-<!-- Services --> 
+<!-- Services -->
 <div class="tab-pane fade" id="services">
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h4><i class="fas fa-tools"></i> Service Bookings</h4>
@@ -357,7 +357,7 @@
     <div class="col-md-2">
       <label>Tháng</label>
       <select id="selectMonth" class="form-select">
-    <option value="1">Tháng 1</option>	
+    <option value="1">Tháng 1</option>
         <option value="2">Tháng 2</option>
         <option value="3">Tháng 3</option>
         <option value="4">Tháng 4</option>
@@ -534,7 +534,7 @@
           <input class="form-check-input" type="checkbox" id="editDiscontinued">
           <label class="form-check-label">Discontinued</label>
         </div>
-          
+
         </div>
         <div class="modal-footer">
           <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -620,7 +620,7 @@
             <label class="form-label">Password</label>
             <input type="password" class="form-control" id="addUserPassword" required>
             <small class="form-text text-muted">Leave blank to keep current password</small>
-        
+
           </div>
         </div>
         <div class="modal-footer">
@@ -764,9 +764,9 @@ $(function () {
 
   // Lắng nghe sự kiện thay đổi của các dropdown và viewType để vẽ biểu đồ
   $('#viewType, #selectMonth, #selectYear').change(fetchAndDrawCharts);
-  
+
   // Gọi hàm vẽ biểu đồ lần đầu khi trang tải xong
-  fetchAndDrawCharts(); 
+  fetchAndDrawCharts();
 });
 
 function fetchAndDrawCharts() {
@@ -920,7 +920,7 @@ $(function() {
       stock:parseInt($('#stock').val()), category:$('#category').val(),
       switchType:$('#switchType').val()||null, layout:$('#layout').val()||null,
       imageUrl:$('#imageUrl').val(), featured:$('#featured').is(':checked'),
-      discontinued: $('#addDiscontinued').is(':checked')    
+      discontinued: $('#addDiscontinued').is(':checked')
     };
     $.ajax({
       url:'/api/products', type:'POST', contentType:'application/json',
@@ -939,7 +939,7 @@ $(function() {
       stock:parseInt($('#editStock').val()), category:$('#editCategory').val(),
       switchType:$('#editSwitchType').val()||null, layout:$('#editLayout').val()||null,
       imageUrl:$('#editImageUrl').val(), featured:$('#editFeatured').is(':checked'),
-      discontinued: $('#editDiscontinued').is(':checked')    
+      discontinued: $('#editDiscontinued').is(':checked')
     };
     $.ajax({
       url:'/api/products/'+id, type:'PUT', contentType:'application/json',

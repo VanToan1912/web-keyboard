@@ -22,9 +22,9 @@
                     <span class="h5 text-primary">
                         <fmt:formatNumber value="${param.price}" pattern="#,###" />₫
                     </span>
-                    <small class="text-success">
-                        <i class="fas fa-box"></i> ${param.stock} in stock
-                    </small>
+<%--                    <small class="text-success">--%>
+<%--                        <i class="fas fa-box"></i> ${param.stock} in stock--%>
+<%--                    </small>--%>
                 </div>
                 <c:if test="${not empty param.switchType}">
                     <small class="text-muted d-block">
