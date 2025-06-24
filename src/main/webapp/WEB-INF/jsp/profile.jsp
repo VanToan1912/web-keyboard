@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thông tin người dùng - KeyCraft</title>
     <link href="/webjars/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/webjars/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body { background-color: #f8f9fa; }
         .profile-card {
@@ -50,12 +50,12 @@
             <div class="profile-card">
                 <div class="text-center mb-4">
                     <h1 class="h3">Thông tin người dùng</h1>
-                    <c:if test="${not empty user.profileImageUrl}">
-                        <img src="${user.profileImageUrl}" alt="Profile Image" class="profile-img mb-3">
-                    </c:if>
-                    <c:if test="${empty user.profileImageUrl}">
-                        <i class="fas fa-user-circle fa-5x text-muted mb-3"></i>
-                    </c:if>
+<%--                    <c:if test="${not empty user.profileImageUrl}">--%>
+<%--                        <img src="${user.profileImageUrl}" alt="Profile Image" class="profile-img mb-3">--%>
+<%--                    </c:if>--%>
+<%--                    <c:if test="${empty user.profileImageUrl}">--%>
+<%--                        <i class="fas fa-user-circle fa-5x text-muted mb-3"></i>--%>
+<%--                    </c:if>--%>
                 </div>
 
                 <c:if test="${success != null}">
@@ -89,10 +89,10 @@
                         <label for="role" class="form-label">Vai trò</label>
                         <input type="text" class="form-control" id="role" value="${user.roleString}" disabled>
                     </div>
-                    <div class="mb-3">
-                        <label for="profileImage" class="form-label">Ảnh đại diện</label>
-                        <input type="file" class="form-control" id="profileImage" name="profileImage" accept="image/*">
-                    </div>
+<%--                    <div class="mb-3">--%>
+<%--                        <label for="profileImage" class="form-label">Ảnh đại diện</label>--%>
+<%--                        <input type="file" class="form-control" id="profileImage" name="profileImage" accept="image/*">--%>
+<%--                    </div>--%>
                     <button type="submit" class="btn btn-primary w-100 mb-2">
                         <i class="fas fa-save"></i> Cập nhật thông tin
                     </button>

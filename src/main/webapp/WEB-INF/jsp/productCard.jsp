@@ -1,12 +1,13 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <div class="col-md-6 col-lg-4 mb-4 product-item" style="height: 440px"
      data-category="${param.category}"
      data-brand="${param.brand}"
      data-price="${param.price}"
      data-name="${param.title}">
-    <div class="card product-card h-100 text-center" style="width: 300px" >
+    <div class="card product-card h-100 text-center" style="width: 300px">
         <a href="${param.url}" class="text-decoration-none text-dark">
             <img src="${param.image}" class="card-img-top" alt="${param.title}"
                  style="height: 200px; object-fit: cover;">
@@ -18,7 +19,9 @@
             <p class="text-muted small">${param.brand}</p>
             <div>
                 <div class="d-flex justify-content-between align-items-center">
-                    <span class="h5 text-primary">$${param.price}</span>
+                    <span class="h5 text-primary">
+                        <fmt:formatNumber value="${param.price}" pattern="#,###" />₫
+                    </span>
                     <small class="text-success">
                         <i class="fas fa-box"></i> ${param.stock} in stock
                     </small>
@@ -30,7 +33,7 @@
                 </c:if>
             </div>
         </div>
-        <div class="card-footer ">
+        <div class="card-footer">
             <button class="btn btn-primary w-100" onclick="addToCart(${param.id}, 1)">
                 <i class="fas fa-cart-plus"></i> Add to Cart
             </button>
