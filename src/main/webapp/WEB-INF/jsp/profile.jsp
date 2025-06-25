@@ -89,10 +89,10 @@
                         <label for="role" class="form-label">Vai trò</label>
                         <input type="text" class="form-control" id="role" value="${user.roleString}" disabled>
                     </div>
-<%--                    <div class="mb-3">--%>
-<%--                        <label for="profileImage" class="form-label">Ảnh đại diện</label>--%>
-<%--                        <input type="file" class="form-control" id="profileImage" name="profileImage" accept="image/*">--%>
-<%--                    </div>--%>
+                    <div class="mb-3">
+                        <label for="profileImage" class="form-label">Ảnh đại diện</label>
+                        <input type="file" class="form-control" id="profileImage" name="profileImage" accept="image/*">
+                    </div>
                     <button type="submit" class="btn btn-primary w-100 mb-2">
                         <i class="fas fa-save"></i> Cập nhật thông tin
                     </button>

@@ -35,7 +35,7 @@
         <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#users">Users</a></li>
         <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#products">Products</a></li>
         <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#orders">Orders</a></li>
-        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#services">Services</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#bookings">Pre-orders</a></li>
         <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#statistics">Statistics</a></li>
     </ul>
 
@@ -305,930 +305,832 @@
         </div>
 
         <!-- Services -->
-        <div class="tab-pane fade" id="services">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4><i class="fas fa-tools"></i> Service Bookings</h4>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addServiceModal">
-                    <i class="fas fa-plus"></i> Add Booking
-                </button>
-            </div>
+        <div class="tab-pane fade" id="bookings">
+            <h4><i class="fas fa-file-signature"></i> Pre-Order Management</h4>
+            <p class="text-muted">Danh sách các yêu cầu đặt hàng trước từ khách hàng.</p>
             <div class="table-responsive">
-                <table id="servicesTable" class="table table-striped">
+                <table class="table table-striped">
+                    <thead>
                     <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Customer Email</th>
-                        <th>Customer Phone</th>
-                        <th>Service Type</th>
-                        <th>Description</th>
-                        <th>Status</th>
-                        <th>Estimated Price</th>
-                        <th>Created At</th>
-                        <th>Actions</th>
+                        <th>Mã</th>
+                        <th>Tên khách hàng</th>
+                        <th>Email</th>
+                        <th>Số điện thoại</th>
+                        <th>Sản phẩm đặt</th>
+                        <th>Số lượng</th>
+                        <th>Ngày đặt</th>
+                        <th>Trạng thái</th>
+                        <th>Mã vận đơn</th>
+                        <th>Hành động</th>
                     </tr>
                     </thead>
+                    </thead>
                     <tbody>
-                    <c:forEach items="${services}" var="s">
+                    <c:forEach items="${bookings}" var="b">
                         <tr>
-                            <td>${s.id}</td>
-                            <td>${s.customerEmail}</td>
-                            <td>${s.customerPhone}</td>
-                            <td>${s.serviceType}</td>
-                            <td>${s.description}</td>
-                            <td>${s.status}</td>
-                            <td>${s.estimatedPrice}</td>
-                            <td>${s.createdAt}</td>
+                            <td>#${b.id}</td>
+                            <td>${b.customerName}</td>
+                            <td>${b.customerEmail}</td>
+                            <td>${b.customerPhone}</td>
+                            <td>${b.serviceName}</td>
+                            <td>${b.quantity}</td>
+
                             <td>
-                                <button onclick="editService(${s.id})" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-edit"></i>
+                                <fmt:formatDate value="${b.createdAtAsDate}" pattern="dd-MM-yyyy HH:mm"/>
+                            </td>
+                            <td>
+                                <select class="form-select form-select-sm booking-status-select" data-id="${b.id}">
+                                    <c:forEach var="statusValue" items="${bookingStatuses}">
+                                        <option value="${statusValue}" ${b.status == statusValue ? 'selected' : ''}>
+                                                ${statusValue}
+                                        </option>
+                                    </c:forEach>
+                                </select>
+                            </td>
+
+                            <td>
+                                <input type="text" class="form-control form-control-sm booking-tracking-input"
+                                       data-id="${b.id}" value="${b.trackingCode}"
+                                       placeholder="Tracking code" ${b.status != 'SHIPPED' ? 'disabled' : ''}/>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-success save-booking-btn" data-id="${b.id}">
+                                    <i class="fas fa-save"></i> Save
                                 </button>
-                                <button onclick="deleteService(${s.id})" class="btn btn-sm btn-outline-danger">
-                                    <i class="fas fa-trash"></i>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deleteBooking(${b.id})">
+                                    <i class="fas fa-trash"></i> Xóa
                                 </button>
                             </td>
+                            ...
                         </tr>
                     </c:forEach>
                     </tbody>
                 </table>
             </div>
         </div>
+            <!-- Statistics -->
+            <div class="tab-pane fade" id="statistics">
+                <h4><i class="fas fa-chart-bar"></i> Sales Statistics</h4>
 
-        <!-- Statistics -->
-        <div class="tab-pane fade" id="statistics">
-            <h4><i class="fas fa-chart-bar"></i> Sales Statistics</h4>
+                <div class="container mt-4">
+                    <h2>Thống kê doanh thu</h2>
 
-            <div class="container mt-4">
-                <h2>Thống kê doanh thu</h2>
-
-                <div class="row mb-3">
-                    <div class="col-md-3">
-                        <label>Kiểu biểu diễn</label>
-                        <select id="viewType" class="form-select">
-                            <option value="date" selected>Ngày</option>
-                            <option value="month">Tháng</option>
-                            <option value="year">Năm</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label>Tháng</label>
-                        <select id="selectMonth" class="form-select">
-                            <option value="1">Tháng 1</option>
-                            <option value="2">Tháng 2</option>
-                            <option value="3">Tháng 3</option>
-                            <option value="4">Tháng 4</option>
-                            <option value="5">Tháng 5</option>
-                            <option value="6">Tháng 6</option>
-                            <option value="7">Tháng 7</option>
-                            <option value="8">Tháng 8</option>
-                            <option value="9">Tháng 9</option>
-                            <option value="10">Tháng 10</option>
-                            <option value="11">Tháng 11</option>
-                            <option value="12">Tháng 12</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label>Năm</label>
-                        <select id="selectYear" class="form-select">
-                            <option value="2020">2020</option>
-                            <option value="2021">2021</option>
-                            <option value="2022">2022</option>
-                            <option value="2023">2023</option>
-                            <option value="2024">2024</option>
-                            <option value="2025">2025</option>
-                            <option value="2026">2026</option>
-                            <option value="2027">2027</option>
-                            <option value="2028">2028</option>
-                            <option value="2029">2029</option>
-                            <option value="2030">2030</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <!-- Bar Chart -->
-                    <div class="col-md-6">
-                        <h5>Biểu đồ cột: Doanh thu theo thời gian</h5>
-                        <canvas id="barChart" height="200"></canvas>
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label>Kiểu biểu diễn</label>
+                            <select id="viewType" class="form-select">
+                                <option value="date" selected>Ngày</option>
+                                <option value="month">Tháng</option>
+                                <option value="year">Năm</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label>Tháng</label>
+                            <select id="selectMonth" class="form-select">
+                                <option value="1">Tháng 1</option>
+                                <option value="2">Tháng 2</option>
+                                <option value="3">Tháng 3</option>
+                                <option value="4">Tháng 4</option>
+                                <option value="5">Tháng 5</option>
+                                <option value="6">Tháng 6</option>
+                                <option value="7">Tháng 7</option>
+                                <option value="8">Tháng 8</option>
+                                <option value="9">Tháng 9</option>
+                                <option value="10">Tháng 10</option>
+                                <option value="11">Tháng 11</option>
+                                <option value="12">Tháng 12</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label>Năm</label>
+                            <select id="selectYear" class="form-select">
+                                <option value="2020">2020</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                                <option value="2028">2028</option>
+                                <option value="2029">2029</option>
+                                <option value="2030">2030</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <!-- Pie Chart -->
-                    <div class="col-md-6">
-                        <h5>Biểu đồ tròn: Doanh thu theo danh mục trong tháng</h5>
-                        <canvas id="pieChart" height="200"></canvas>
+                    <div class="row">
+                        <!-- Bar Chart -->
+                        <div class="col-md-6">
+                            <h5>Biểu đồ cột: Doanh thu theo thời gian</h5>
+                            <canvas id="barChart" height="200"></canvas>
+                        </div>
+
+                        <!-- Pie Chart -->
+                        <div class="col-md-6">
+                            <h5>Biểu đồ tròn: Doanh thu theo danh mục trong tháng</h5>
+                            <canvas id="pieChart" height="200"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
 
-        <!-- Add Product Modal -->
-        <div class="modal fade" id="addProductModal" tabindex="-1">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <form id="addProductForm">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Add New Product</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row mb-3">
-                                <div class="col"><label class="form-label">Name</label>
-                                    <input type="text" class="form-control" id="name" required></div>
-                                <div class="col"><label class="form-label">Brand</label>
-                                    <input type="text" class="form-control" id="brand" required></div>
+            <!-- Add Product Modal -->
+            <div class="modal fade" id="addProductModal" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <form id="addProductForm">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Add New Product</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label">Description</label>
-                                <textarea class="form-control" id="description" rows="2" required></textarea>
+                            <div class="modal-body">
+                                <div class="row mb-3">
+                                    <div class="col"><label class="form-label">Name</label>
+                                        <input type="text" class="form-control" id="name" required></div>
+                                    <div class="col"><label class="form-label">Brand</label>
+                                        <input type="text" class="form-control" id="brand" required></div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Description</label>
+                                    <textarea class="form-control" id="description" rows="2" required></textarea>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col"><label class="form-label">Price</label>
+                                        <input type="number" step="0.01" class="form-control" id="price" required></div>
+                                    <div class="col"><label class="form-label">Stock</label>
+                                        <input type="number" class="form-control" id="stock" required></div>
+                                    <div class="col"><label class="form-label">Category</label>
+                                        <select class="form-select" id="category" required>
+                                            <option value="mechanical-keyboards">Mechanical Keyboards</option>
+                                            <option value="switches">Switches</option>
+                                            <option value="keycaps">Keycaps</option>
+                                            <option value="accessories">Accessories</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col"><label class="form-label">Switch Type</label>
+                                        <select class="form-select" id="switchType">
+                                            <option value="">None</option>
+                                            <option value="linear">Linear</option>
+                                            <option value="tactile">Tactile</option>
+                                            <option value="clicky">Clicky</option>
+                                        </select>
+                                    </div>
+                                    <div class="col"><label class="form-label">Layout</label>
+                                        <input type="text" class="form-control" id="layout" placeholder="e.g. 60%, TKL">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Image URL</label>
+                                    <input type="url" class="form-control" id="imageUrl" required>
+                                </div>
+                                <div class="form-check mb-0">
+                                    <input class="form-check-input" type="checkbox" id="featured">
+                                    <label class="form-check-label">Featured</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="addDiscontinued">
+                                    <label class="form-check-label">Discontinued</label>
+                                </div>
                             </div>
-                            <div class="row mb-3">
-                                <div class="col"><label class="form-label">Price</label>
-                                    <input type="number" step="0.01" class="form-control" id="price" required></div>
-                                <div class="col"><label class="form-label">Stock</label>
-                                    <input type="number" class="form-control" id="stock" required></div>
-                                <div class="col"><label class="form-label">Category</label>
-                                    <select class="form-select" id="category" required>
-                                        <option value="mechanical-keyboards">Mechanical Keyboards</option>
-                                        <option value="switches">Switches</option>
-                                        <option value="keycaps">Keycaps</option>
-                                        <option value="accessories">Accessories</option>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button class="btn btn-primary" type="submit">Add Product</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Product Modal -->
+            <div class="modal fade" id="editProductModal" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <form id="editProductForm">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit Product</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" id="editProductId">
+                                <div class="row mb-3">
+                                    <div class="col"><label class="form-label">Name</label>
+                                        <input type="text" class="form-control" id="editName" required></div>
+                                    <div class="col"><label class="form-label">Brand</label>
+                                        <input type="text" class="form-control" id="editBrand" required></div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Description</label>
+                                    <textarea class="form-control" id="editDescription" rows="2" required></textarea>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col"><label class="form-label">Price</label>
+                                        <input type="number" step="0.01" class="form-control" id="editPrice" required>
+                                    </div>
+                                    <div class="col"><label class="form-label">Stock</label>
+                                        <input type="number" class="form-control" id="editStock" required></div>
+                                    <div class="col"><label class="form-label">Category</label>
+                                        <select class="form-select" id="editCategory" required>
+                                            <option value="mechanical-keyboards">Mechanical Keyboards</option>
+                                            <option value="switches">Switches</option>
+                                            <option value="keycaps">Keycaps</option>
+                                            <option value="accessories">Accessories</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col"><label class="form-label">Switch Type</label>
+                                        <select class="form-select" id="editSwitchType">
+                                            <option value="">None</option>
+                                            <option value="linear">Linear</option>
+                                            <option value="tactile">Tactile</option>
+                                            <option value="clicky">Clicky</option>
+                                        </select>
+                                    </div>
+                                    <div class="col"><label class="form-label">Layout</label>
+                                        <input type="text" class="form-control" id="editLayout"></div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Image URL</label>
+                                    <input type="url" class="form-control" id="editImageUrl" required>
+                                </div>
+                                <div class="form-check mb-0">
+                                    <input class="form-check-input" type="checkbox" id="editFeatured">
+                                    <label class="form-check-label">Featured</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="editDiscontinued">
+                                    <label class="form-check-label">Discontinued</label>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button class="btn btn-primary" type="submit">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Edit User Modal -->
+            <div class="modal fade" id="editUserModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form id="editUserForm">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit User</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" id="editUserId">
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="editUserEmail" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" class="form-control" id="editUserFirstName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" id="editUserLastName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Role</label>
+                                    <select class="form-select" id="editUserRole" required>
+                                        <option value="CUSTOMER">Customer</option>
+                                        <option value="ADMIN">Admin</option>
                                     </select>
                                 </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="editUserPassword" required>
+                                </div>
                             </div>
-                            <div class="row mb-3">
-                                <div class="col"><label class="form-label">Switch Type</label>
-                                    <select class="form-select" id="switchType">
-                                        <option value="">None</option>
-                                        <option value="linear">Linear</option>
-                                        <option value="tactile">Tactile</option>
-                                        <option value="clicky">Clicky</option>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button class="btn btn-primary" type="submit">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Add User Modal -->
+            <div class="modal fade" id="addUserModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form id="addUserForm">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Add New User</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="addUserEmail" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" class="form-control" id="addUserFirstName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" id="addUserLastName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Role</label>
+                                    <select class="form-select" id="addUserRole" required>
+                                        <option value="CUSTOMER">Customer</option>
+                                        <option value="ADMIN">Admin</option>
                                     </select>
                                 </div>
-                                <div class="col"><label class="form-label">Layout</label>
-                                    <input type="text" class="form-control" id="layout" placeholder="e.g. 60%, TKL">
+                                <div class="mb-3">
+                                    <label class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="addUserPassword" required>
+                                    <small class="form-text text-muted">Leave blank to keep current password</small>
+
                                 </div>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label">Image URL</label>
-                                <input type="url" class="form-control" id="imageUrl" required>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button class="btn btn-primary" type="submit">Add User</button>
                             </div>
-                            <div class="form-check mb-0">
-                                <input class="form-check-input" type="checkbox" id="featured">
-                                <label class="form-check-label">Featured</label>
-                            </div>
-                            <div class="form-check mb-3">
-                                <input class="form-check-input" type="checkbox" id="addDiscontinued">
-                                <label class="form-check-label">Discontinued</label>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button class="btn btn-primary" type="submit">Add Product</button>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Edit Product Modal -->
-        <div class="modal fade" id="editProductModal" tabindex="-1">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <form id="editProductForm">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Edit Product</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <input type="hidden" id="editProductId">
-                            <div class="row mb-3">
-                                <div class="col"><label class="form-label">Name</label>
-                                    <input type="text" class="form-control" id="editName" required></div>
-                                <div class="col"><label class="form-label">Brand</label>
-                                    <input type="text" class="form-control" id="editBrand" required></div>
+            <!-- Add Service Modal -->
+            <div class="modal fade" id="addServiceModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form id="addServiceForm">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Add New Service</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label">Description</label>
-                                <textarea class="form-control" id="editDescription" rows="2" required></textarea>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col"><label class="form-label">Price</label>
-                                    <input type="number" step="0.01" class="form-control" id="editPrice" required></div>
-                                <div class="col"><label class="form-label">Stock</label>
-                                    <input type="number" class="form-control" id="editStock" required></div>
-                                <div class="col"><label class="form-label">Category</label>
-                                    <select class="form-select" id="editCategory" required>
-                                        <option value="mechanical-keyboards">Mechanical Keyboards</option>
-                                        <option value="switches">Switches</option>
-                                        <option value="keycaps">Keycaps</option>
-                                        <option value="accessories">Accessories</option>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Customer Email</label>
+                                    <input type="email" class="form-control" id="addServiceEmail" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Customer Phone</label>
+                                    <input type="text" class="form-control" id="addServicePhone" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Service Type</label>
+                                    <select class="form-select" id="addServiceType" required>
+                                        <option value="">-- choose --</option>
+                                        <option value="CUSTOM_BUILD">Custom Build</option>
+                                        <option value="CLEANING">Cleaning</option>
+                                        <option value="REPAIR">Repair</option>
                                     </select>
                                 </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col"><label class="form-label">Switch Type</label>
-                                    <select class="form-select" id="editSwitchType">
-                                        <option value="">None</option>
-                                        <option value="linear">Linear</option>
-                                        <option value="tactile">Tactile</option>
-                                        <option value="clicky">Clicky</option>
+                                <div class="mb-3">
+                                    <label class="form-label">Description</label>
+                                    <textarea class="form-control" id="addServiceDescription"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-select" id="addServiceStatus" required>
+                                        <option value="PENDING">Pending</option>
+                                        <option value="IN_PROGRESS">In Progress</option>
+                                        <option value="CONFIRMED">Confirmed</option>
+                                        <option value="COMPLETED">Completed</option>
+                                        <option value="CANCELLED">Cancelled</option>
                                     </select>
                                 </div>
-                                <div class="col"><label class="form-label">Layout</label>
-                                    <input type="text" class="form-control" id="editLayout"></div>
+                                <div class="mb-3">
+                                    <label class="form-label">Estimated Price</label>
+                                    <input type="number" step="0.01" class="form-control" id="addServicePrice">
+                                </div>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label">Image URL</label>
-                                <input type="url" class="form-control" id="editImageUrl" required>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Add Service</button>
                             </div>
-                            <div class="form-check mb-0">
-                                <input class="form-check-input" type="checkbox" id="editFeatured">
-                                <label class="form-check-label">Featured</label>
-                            </div>
-                            <div class="form-check mb-3">
-                                <input class="form-check-input" type="checkbox" id="editDiscontinued">
-                                <label class="form-check-label">Discontinued</label>
-                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button class="btn btn-primary" type="submit">Save Changes</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <!-- Edit User Modal -->
-        <div class="modal fade" id="editUserModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form id="editUserForm">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Edit User</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <input type="hidden" id="editUserId">
-                            <div class="mb-3">
-                                <label class="form-label">Email</label>
-                                <input type="email" class="form-control" id="editUserEmail" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">First Name</label>
-                                <input type="text" class="form-control" id="editUserFirstName" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Last Name</label>
-                                <input type="text" class="form-control" id="editUserLastName" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Role</label>
-                                <select class="form-select" id="editUserRole" required>
-                                    <option value="CUSTOMER">Customer</option>
-                                    <option value="ADMIN">Admin</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Password</label>
-                                <input type="password" class="form-control" id="editUserPassword" required>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button class="btn btn-primary" type="submit">Save Changes</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <!-- Add User Modal -->
-        <div class="modal fade" id="addUserModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form id="addUserForm">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Add New User</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label class="form-label">Email</label>
-                                <input type="email" class="form-control" id="addUserEmail" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">First Name</label>
-                                <input type="text" class="form-control" id="addUserFirstName" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Last Name</label>
-                                <input type="text" class="form-control" id="addUserLastName" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Role</label>
-                                <select class="form-select" id="addUserRole" required>
-                                    <option value="CUSTOMER">Customer</option>
-                                    <option value="ADMIN">Admin</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Password</label>
-                                <input type="password" class="form-control" id="addUserPassword" required>
-                                <small class="form-text text-muted">Leave blank to keep current password</small>
-
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button class="btn btn-primary" type="submit">Add User</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <!-- Add Service Modal -->
-        <div class="modal fade" id="addServiceModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form id="addServiceForm">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Add New Service</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label class="form-label">Customer Email</label>
-                                <input type="email" class="form-control" id="addServiceEmail" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Customer Phone</label>
-                                <input type="text" class="form-control" id="addServicePhone" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Service Type</label>
-                                <select class="form-select" id="addServiceType" required>
-                                    <option value="">-- choose --</option>
-                                    <option value="CUSTOM_BUILD">Custom Build</option>
-                                    <option value="CLEANING">Cleaning</option>
-                                    <option value="REPAIR">Repair</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Description</label>
-                                <textarea class="form-control" id="addServiceDescription"></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Status</label>
-                                <select class="form-select" id="addServiceStatus" required>
-                                    <option value="PENDING">Pending</option>
-                                    <option value="IN_PROGRESS">In Progress</option>
-                                    <option value="CONFIRMED">Confirmed</option>
-                                    <option value="COMPLETED">Completed</option>
-                                    <option value="CANCELLED">Cancelled</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Estimated Price</label>
-                                <input type="number" step="0.01" class="form-control" id="addServicePrice">
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Add Service</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- Edit Service Modal -->
-        <div class="modal fade" id="editServiceModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form id="editServiceForm">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Edit Service</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <input type="hidden" id="editServiceId">
-                            <div class="mb-3">
-                                <label class="form-label">Customer Email</label>
-                                <input type="email" class="form-control" id="editServiceEmail" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Customer Phone</label>
-                                <input type="text" class="form-control" id="editServicePhone" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Service Type</label>
-                                <select class="form-select" id="editServiceType" required>
-                                    <option value="">-- choose --</option>
-                                    <option value="CUSTOM_BUILD">Custom Build</option>
-                                    <option value="CLEANING">Cleaning</option>
-                                    <option value="REPAIR">Repair</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Description</label>
-                                <textarea class="form-control" id="editServiceDescription"></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Status</label>
-                                <select class="form-select" id="editServiceStatus" required>
-                                    <option value="PENDING">Pending</option>
-                                    <option value="IN_PROGRESS">In Progress</option>
-                                    <option value="CONFIRMED">Confirmed</option>
-                                    <option value="COMPLETED">Completed</option>
-                                    <option value="CANCELLED">Cancelled</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Estimated Price</label>
-                                <input type="number" step="0.01" class="form-control" id="editServicePrice">
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
         </div>
     </div>
 
 
-        <script src="/webjars/jquery/jquery.min.js"></script>
-        <script src="/webjars/bootstrap/js/bootstrap.bundle.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script>
-            let barChartInstance = null;
-            let pieChartInstance = null;
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let barChartInstance = null;
+        let pieChartInstance = null;
 
-            $(function () {
-                // Khởi tạo dropdown tháng/năm
-                const now = new Date();
-                const currentMonth = now.getMonth() + 1; // Lấy tháng hiện tại (1-12)
-                const currentYear = now.getFullYear();   // Lấy năm hiện tại
+        $(function () {
+            // Khởi tạo dropdown tháng/năm
+            const now = new Date();
+            const currentMonth = now.getMonth() + 1; // Lấy tháng hiện tại (1-12)
+            const currentYear = now.getFullYear();   // Lấy năm hiện tại
 
-                // Chọn tháng và năm hiện tại trong dropdown
-                $('#selectMonth').val(currentMonth).change(); // .change() để kích hoạt event nếu cần
-                $('#selectYear').val(currentYear).change();   // .change() để kích hoạt event nếu cần
+            // Chọn tháng và năm hiện tại trong dropdown
+            $('#selectMonth').val(currentMonth).change(); // .change() để kích hoạt event nếu cần
+            $('#selectYear').val(currentYear).change();   // .change() để kích hoạt event nếu cần
 
-                // Lắng nghe sự kiện thay đổi của các dropdown và viewType để vẽ biểu đồ
-                $('#viewType, #selectMonth, #selectYear').change(fetchAndDrawCharts);
+            // Lắng nghe sự kiện thay đổi của các dropdown và viewType để vẽ biểu đồ
+            $('#viewType, #selectMonth, #selectYear').change(fetchAndDrawCharts);
 
-                // Gọi hàm vẽ biểu đồ lần đầu khi trang tải xong
-                fetchAndDrawCharts();
-            });
+            // Gọi hàm vẽ biểu đồ lần đầu khi trang tải xong
+            fetchAndDrawCharts();
+        });
 
-            function fetchAndDrawCharts() {
-                const type = $('#viewType').val(); // 'date', 'month', 'year'
-                let month = parseInt($('#selectMonth').val());
-                let year = parseInt($('#selectYear').val());
+        function fetchAndDrawCharts() {
+            const type = $('#viewType').val(); // 'date', 'month', 'year'
+            let month = parseInt($('#selectMonth').val());
+            let year = parseInt($('#selectYear').val());
 
-                // Đảm bảo month và year là số, tránh gửi NaN lên backend
-                if (isNaN(month)) {
-                    month = null; // Hoặc một giá trị mặc định hợp lệ khác nếu API yêu cầu
-                }
-                if (isNaN(year)) {
-                    year = null;  // Hoặc một giá trị mặc định hợp lệ khác nếu API yêu cầu
-                }
-
-                let format;
-                if (type === 'date') format = '%Y-%m-%d';
-                else if (type === 'month') format = '%Y-%m';
-                else format = '%Y';
-
-                // Bar Chart API
-                $.get('/api/statistics/revenue-by-period', {format, month, year}, function (data) {
-                    const labels = data.map(d => d.timeLabel);
-                    const values = data.map(d => Number(d.revenue || 0));
-
-                    if (barChartInstance) barChartInstance.destroy();
-                    const ctx = document.getElementById('barChart').getContext('2d');
-                    barChartInstance = new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: labels,
-                            datasets: [{
-                                label: 'Doanh thu ($)',
-                                data: values,
-                                backgroundColor: '#0d6efd'
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            scales: {
-                                y: {beginAtZero: true}
-                            }
-                        }
-                    });
-                });
-
-                // Pie Chart API
-                $.get('/api/statistics/revenue-by-category', {month, year}, function (data) {
-                    const labels = data.map(d => d.categoryName);
-                    const values = data.map(d => Number(d.revenue || 0));
-
-                    if (pieChartInstance) pieChartInstance.destroy();
-                    const ctx = document.getElementById('pieChart').getContext('2d');
-                    pieChartInstance = new Chart(ctx, {
-                        type: 'pie',
-                        data: {
-                            labels: labels,
-                            datasets: [{
-                                data: values,
-                                backgroundColor: ['#0d6efd', '#198754', '#ffc107', '#dc3545', '#6f42c1']
-                            }]
-                        }
-                    });
-                });
+            // Đảm bảo month và year là số, tránh gửi NaN lên backend
+            if (isNaN(month)) {
+                month = null; // Hoặc một giá trị mặc định hợp lệ khác nếu API yêu cầu
+            }
+            if (isNaN(year)) {
+                year = null;  // Hoặc một giá trị mặc định hợp lệ khác nếu API yêu cầu
             }
 
-            window.filterOrders = function () {
-                const name = $('#filterName').val().toLowerCase();
-                const category = $('#filterCategory').val();
-                const brand = $('#filterBrand').val().toLowerCase();
-                const minPrice = parseFloat($('#filterMinPrice').val()) || 0;
-                const maxPrice = parseFloat($('#filterMaxPrice').val()) || Infinity;
-                const stockStatus = $('#filterStockStatus').val(); // 'out', 'discontinued', ''
+            let format;
+            if (type === 'date') format = '%Y-%m-%d';
+            else if (type === 'month') format = '%Y-%m';
+            else format = '%Y';
 
-                $('#products table tbody tr').each(function () {
-                    const row = $(this);
-                    const prodName = row.find('td:nth-child(2)').text().toLowerCase();
-                    const prodBrand = row.find('td:nth-child(3)').text().toLowerCase();
-                    const prodPrice = parseFloat(row.find('td:nth-child(4)').text().replace('$', '')) || 0;
-                    const prodStock = parseInt(row.find('td:nth-child(5)').text()) || 0;
+            // Bar Chart API
+            $.get('/api/statistics/revenue-by-period', {format, month, year}, function (data) {
+                const labels = data.map(d => d.timeLabel);
+                const values = data.map(d => Number(d.revenue || 0));
 
-                    let isVisible = true;
-
-                    if (name && !prodName.includes(name)) isVisible = false;
-                    if (brand && !prodBrand.includes(brand)) isVisible = false;
-                    if (category && !row.find('td:nth-child(7)').text().includes(category)) isVisible = false; // if category displayed
-                    if (prodPrice < minPrice || prodPrice > maxPrice) isVisible = false;
-
-                    // Handle stock status
-                    if (stockStatus === 'out' && prodStock > 0) isVisible = false;
-                    if (stockStatus === 'discontinued' && !row.hasClass('discontinued')) isVisible = false;
-
-                    row.toggle(isVisible);
-                });
-            }
-
-            //1) Hàm lọc phải nằm ngoài $(function) để global
-            window.filterOrders = function () {
-                const nameFilter = $('#searchName').val().toLowerCase();
-                const minTotal = parseFloat($('#minTotal').val()) || 0;
-                const maxTotal = parseFloat($('#maxTotal').val()) || Infinity;
-
-                $('#ordersTable tbody tr').each(function () {
-                    const $row = $(this);
-                    const prods = ($row.data('products') || '').toLowerCase();
-                    const totalTxt = $row.find('.order-total').text().replace('$', '').trim();
-                    const totalVal = parseFloat(totalTxt) || 0;
-
-                    const okName = prods.includes(nameFilter);
-                    const okTotal = (totalVal >= minTotal && totalVal <= maxTotal);
-                    $row.toggle(okName && okTotal);
-                });
-            };
-
-            // 2) Khi DOM sẵn sàng thì bind mọi sự kiện
-            $(function () {
-                // Filter button
-                $('#btnFilter').click(filterOrders);
-
-                // Edit
-                window.editProduct = function (id) {
-                    $.getJSON('/api/products/' + id, function (p) {
-                        $('#editProductId').val(p.id);
-                        $('#editName').val(p.name);
-                        $('#editBrand').val(p.brand);
-                        $('#editDescription').val(p.description);
-                        $('#editPrice').val(p.price);
-                        $('#editStock').val(p.stock);
-                        $('#editCategory').val(p.category);
-                        $('#editSwitchType').val(p.switchType || '');
-                        $('#editLayout').val(p.layout || '');
-                        $('#editImageUrl').val(p.imageUrl);
-                        $('#editFeatured').prop('checked', p.featured);
-                        $('#editDiscontinued').prop('checked', p.discontinued);
-                        new bootstrap.Modal($('#editProductModal')[0]).show();
-                    });
-                };
-
-                // Delete
-                window.deleteProduct = function (id) {
-                    if (confirm('Xóa product #' + id + '?')) {
-                        $.ajax({url: '/api/products/' + id, type: 'DELETE', success: () => location.reload()});
-                    }
-                };
-
-                // Add
-                $('#addProductForm').submit(function (e) {
-                    e.preventDefault();
-                    var data = {
-                        name: $('#name').val(), brand: $('#brand').val(),
-                        description: $('#description').val(), price: parseFloat($('#price').val()),
-                        stock: parseInt($('#stock').val()), category: $('#category').val(),
-                        switchType: $('#switchType').val() || null, layout: $('#layout').val() || null,
-                        imageUrl: $('#imageUrl').val(), featured: $('#featured').is(':checked'),
-                        discontinued: $('#addDiscontinued').is(':checked')
-                    };
-                    $.ajax({
-                        url: '/api/products', type: 'POST', contentType: 'application/json',
-                        data: JSON.stringify(data),
-                        success: () => location.reload()
-                    });
-                });
-
-                // Save edit
-                $('#editProductForm').submit(function (e) {
-                    e.preventDefault();
-                    var id = $('#editProductId').val();
-                    var data = {
-                        name: $('#editName').val(), brand: $('#editBrand').val(),
-                        description: $('#editDescription').val(), price: parseFloat($('#editPrice').val()),
-                        stock: parseInt($('#editStock').val()), category: $('#editCategory').val(),
-                        switchType: $('#editSwitchType').val() || null, layout: $('#editLayout').val() || null,
-                        imageUrl: $('#editImageUrl').val(), featured: $('#editFeatured').is(':checked'),
-                        discontinued: $('#editDiscontinued').is(':checked')
-                    };
-                    $.ajax({
-                        url: '/api/products/' + id, type: 'PUT', contentType: 'application/json',
-                        data: JSON.stringify(data),
-                        success: () => location.reload()
-                    });
-                });
-            });
-            // user
-
-            // Add new user
-            $('#addUserForm').submit(function (e) {
-                e.preventDefault();
-
-                const data = {
-                    email: $('#addUserEmail').val(),
-                    firstName: $('#addUserFirstName').val(),
-                    lastName: $('#addUserLastName').val(),
-                    role: $('#addUserRole').val(),
-                    password: $('#addUserPassword').val()
-                };
-
-                $.ajax({
-                    url: '/api/users',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(data),
-                    success: () => {
-                        $('#addUserModal').modal('hide');
-                        location.reload();
+                if (barChartInstance) barChartInstance.destroy();
+                const ctx = document.getElementById('barChart').getContext('2d');
+                barChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Doanh thu ($)',
+                            data: values,
+                            backgroundColor: '#0d6efd'
+                        }]
                     },
-                    error: function (xhr) {
-                        if (xhr.status === 409) {
-                            alert("Email already exists. Please use another email.");
-                        } else {
-                            alert("Failed to add user. Please check your input.");
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {beginAtZero: true}
                         }
                     }
                 });
             });
 
+            // Pie Chart API
+            $.get('/api/statistics/revenue-by-category', {month, year}, function (data) {
+                const labels = data.map(d => d.categoryName);
+                const values = data.map(d => Number(d.revenue || 0));
 
-            // Edit user
-            window.editUser = function (id) {
-                $.getJSON('/api/users/' + id, function (u) {
-                    $('#editUserId').val(u.id);
-                    $('#editUserEmail').val(u.email);
-                    $('#editUserFirstName').val(u.firstName);
-                    $('#editUserLastName').val(u.lastName);
-                    $('#editUserRole').val(u.role);
-                    new bootstrap.Modal($('#editUserModal')[0]).show();
+                if (pieChartInstance) pieChartInstance.destroy();
+                const ctx = document.getElementById('pieChart').getContext('2d');
+                pieChartInstance = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: values,
+                            backgroundColor: ['#0d6efd', '#198754', '#ffc107', '#dc3545', '#6f42c1']
+                        }]
+                    }
+                });
+            });
+        }
+
+        window.filterOrders = function () {
+            const name = $('#filterName').val().toLowerCase();
+            const category = $('#filterCategory').val();
+            const brand = $('#filterBrand').val().toLowerCase();
+            const minPrice = parseFloat($('#filterMinPrice').val()) || 0;
+            const maxPrice = parseFloat($('#filterMaxPrice').val()) || Infinity;
+            const stockStatus = $('#filterStockStatus').val(); // 'out', 'discontinued', ''
+
+            $('#products table tbody tr').each(function () {
+                const row = $(this);
+                const prodName = row.find('td:nth-child(2)').text().toLowerCase();
+                const prodBrand = row.find('td:nth-child(3)').text().toLowerCase();
+                const prodPrice = parseFloat(row.find('td:nth-child(4)').text().replace('$', '')) || 0;
+                const prodStock = parseInt(row.find('td:nth-child(5)').text()) || 0;
+
+                let isVisible = true;
+
+                if (name && !prodName.includes(name)) isVisible = false;
+                if (brand && !prodBrand.includes(brand)) isVisible = false;
+                if (category && !row.find('td:nth-child(7)').text().includes(category)) isVisible = false; // if category displayed
+                if (prodPrice < minPrice || prodPrice > maxPrice) isVisible = false;
+
+                // Handle stock status
+                if (stockStatus === 'out' && prodStock > 0) isVisible = false;
+                if (stockStatus === 'discontinued' && !row.hasClass('discontinued')) isVisible = false;
+
+                row.toggle(isVisible);
+            });
+        }
+
+        //1) Hàm lọc phải nằm ngoài $(function) để global
+        window.filterOrders = function () {
+            const nameFilter = $('#searchName').val().toLowerCase();
+            const minTotal = parseFloat($('#minTotal').val()) || 0;
+            const maxTotal = parseFloat($('#maxTotal').val()) || Infinity;
+
+            $('#ordersTable tbody tr').each(function () {
+                const $row = $(this);
+                const prods = ($row.data('products') || '').toLowerCase();
+                const totalTxt = $row.find('.order-total').text().replace('$', '').trim();
+                const totalVal = parseFloat(totalTxt) || 0;
+
+                const okName = prods.includes(nameFilter);
+                const okTotal = (totalVal >= minTotal && totalVal <= maxTotal);
+                $row.toggle(okName && okTotal);
+            });
+        };
+
+        // 2) Khi DOM sẵn sàng thì bind mọi sự kiện
+        $(function () {
+            // Filter button
+            $('#btnFilter').click(filterOrders);
+
+            // Edit
+            window.editProduct = function (id) {
+                $.getJSON('/api/products/' + id, function (p) {
+                    $('#editProductId').val(p.id);
+                    $('#editName').val(p.name);
+                    $('#editBrand').val(p.brand);
+                    $('#editDescription').val(p.description);
+                    $('#editPrice').val(p.price);
+                    $('#editStock').val(p.stock);
+                    $('#editCategory').val(p.category);
+                    $('#editSwitchType').val(p.switchType || '');
+                    $('#editLayout').val(p.layout || '');
+                    $('#editImageUrl').val(p.imageUrl);
+                    $('#editFeatured').prop('checked', p.featured);
+                    $('#editDiscontinued').prop('checked', p.discontinued);
+                    new bootstrap.Modal($('#editProductModal')[0]).show();
                 });
             };
 
-            // Save edited user
-            $('#editUserForm').submit(function (e) {
-                e.preventDefault();
-                const id = $('#editUserId').val();
-                const password = $('#editUserPassword').val();
-
-                const data = {
-                    email: $('#editUserEmail').val(),
-                    firstName: $('#editUserFirstName').val(),
-                    lastName: $('#editUserLastName').val(),
-                    role: $('#editUserRole').val()
-                };
-
-                // Chỉ thêm password nếu người dùng nhập
-                if (password.trim() !== '') {
-                    data.password = password;
+            // Delete
+            window.deleteProduct = function (id) {
+                if (confirm('Xóa product #' + id + '?')) {
+                    $.ajax({url: '/api/products/' + id, type: 'DELETE', success: () => location.reload()});
                 }
+            };
 
+            // Add
+            $('#addProductForm').submit(function (e) {
+                e.preventDefault();
+                var data = {
+                    name: $('#name').val(), brand: $('#brand').val(),
+                    description: $('#description').val(), price: parseFloat($('#price').val()),
+                    stock: parseInt($('#stock').val()), category: $('#category').val(),
+                    switchType: $('#switchType').val() || null, layout: $('#layout').val() || null,
+                    imageUrl: $('#imageUrl').val(), featured: $('#featured').is(':checked'),
+                    discontinued: $('#addDiscontinued').is(':checked')
+                };
                 $.ajax({
-                    url: '/api/users/' + id,
-                    type: 'PUT',
-                    contentType: 'application/json',
+                    url: '/api/products', type: 'POST', contentType: 'application/json',
                     data: JSON.stringify(data),
                     success: () => location.reload()
                 });
             });
 
-
-            //Delete user
-            window.deleteUser = function (id) {
-                if (confirm('Xoá user #' + id + '?')) {
-                    $.ajax({
-                        url: '/api/users/' + id,
-                        type: 'DELETE',
-                        success: () => location.reload(),
-                        error: function (xhr) {
-                            if (xhr.status === 409) {
-                                alert('Không thể xoá user vì có đơn hàng chưa bị huỷ.');
-                            } else {
-                                alert('Lỗi khi xoá user.');
-                            }
-                        }
-                    });
-                }
-            };
-
-            //Save active tab
-            // Lưu tab đang active vào localStorage
-            $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-                localStorage.setItem('activeAdminTab', $(e.target).attr('href'));
-            });
-
-            // Khi trang load, kiểm tra và mở lại tab đã lưu
-            $(function () {
-                const activeTab = localStorage.getItem('activeAdminTab');
-                if (activeTab) {
-                    $('#adminTabs a[href="' + activeTab + '"]').tab('show');
-                }
-            });
-
-            //order
-            $(function () {
-                $('.order-status').on('change', function () {
-                    const id = $(this).data('id');
-                    const newStatus = $(this).val();
-                    const trackingInput = $('.tracking-input[data-id="' + id + '"]');
-                    if (newStatus === 'SHIPPING') {
-                        trackingInput.prop('disabled', false);
-                    } else {
-                        trackingInput.prop('disabled', true).val('');
-                    }
-                });
-
-                $('.save-order').on('click', function () {
-                    const id = $(this).data('id');
-                    const status = $('.order-status[data-id="' + id + '"]').val();
-                    const trackingCode = $('.tracking-input[data-id="' + id + '"]').val();
-
-                    $.ajax({
-                        url: '/api/orders/' + id,
-                        type: 'PUT',
-                        contentType: 'application/json',
-                        data: JSON.stringify({status, trackingCode}),
-                        success: () => location.reload(),
-                        error: () => alert("Failed to update order.")
-                    });
-                });
-            });
-
-            function filterProducts() {
-                const name = $('#filterName').val().toLowerCase();
-                const category = $('#filterCategory').val().toLowerCase();
-                const brand = $('#filterBrand').val().toLowerCase();
-                const minPrice = parseFloat($('#filterMinPrice').val()) || 0;
-                const maxPrice = parseFloat($('#filterMaxPrice').val()) || Infinity;
-                const stockStatus = $('#filterStockStatus').val();
-
-                $('#products table tbody tr').each(function () {
-                    const row = $(this);
-                    const prodName = row.find('td:nth-child(2)').text().toLowerCase();
-                    const prodBrand = row.find('td:nth-child(3)').text().toLowerCase();
-                    const prodPrice = parseFloat(row.find('td:nth-child(4)').text().replace('$', '')) || 0;
-                    const prodStock = parseInt(row.find('td:nth-child(5)').text()) || 0;
-                    const prodCategory = row.find('td:nth-child(6)').text().toLowerCase();
-                    const isDiscontinued = row.hasClass('discontinued');
-
-                    let visible = true;
-
-                    if (name && !prodName.includes(name)) visible = false;
-                    if (brand && !prodBrand.includes(brand)) visible = false;
-                    if (category && !prodCategory.includes(category)) visible = false;
-                    if (prodPrice < minPrice || prodPrice > maxPrice) visible = false;
-
-                    if (stockStatus === 'out' && prodStock > 0) visible = false;
-                    if (stockStatus === 'discontinued' && !isDiscontinued) visible = false;
-
-                    row.toggle(visible);
-                });
-            }
-
-            // Add new service
-            $('#addServiceForm').submit(function (e) {
+            // Save edit
+            $('#editProductForm').submit(function (e) {
                 e.preventDefault();
-                const data = {
-                    user: {id: parseInt($('#addServiceUserId').val(), 10)},
-                    serviceType: $('#addServiceType').val(),
-                    description: $('#addServiceDescription').val(),
-                    status: $('#addServiceStatus').val(),
-                    estimatedPrice: parseFloat($('#addServicePrice').val()) || 0
+                var id = $('#editProductId').val();
+                var data = {
+                    name: $('#editName').val(), brand: $('#editBrand').val(),
+                    description: $('#editDescription').val(), price: parseFloat($('#editPrice').val()),
+                    stock: parseInt($('#editStock').val()), category: $('#editCategory').val(),
+                    switchType: $('#editSwitchType').val() || null, layout: $('#editLayout').val() || null,
+                    imageUrl: $('#editImageUrl').val(), featured: $('#editFeatured').is(':checked'),
+                    discontinued: $('#editDiscontinued').is(':checked')
                 };
                 $.ajax({
-                    url: '/api/services',
-                    type: 'POST',
-                    contentType: 'application/json',
+                    url: '/api/products/' + id, type: 'PUT', contentType: 'application/json',
                     data: JSON.stringify(data),
+                    success: () => location.reload()
+                });
+            });
+        });
+        // user
+
+        // Add new user
+        $('#addUserForm').submit(function (e) {
+            e.preventDefault();
+
+            const data = {
+                email: $('#addUserEmail').val(),
+                firstName: $('#addUserFirstName').val(),
+                lastName: $('#addUserLastName').val(),
+                role: $('#addUserRole').val(),
+                password: $('#addUserPassword').val()
+            };
+
+            $.ajax({
+                url: '/api/users',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: () => {
+                    $('#addUserModal').modal('hide');
+                    location.reload();
+                },
+                error: function (xhr) {
+                    if (xhr.status === 409) {
+                        alert("Email already exists. Please use another email.");
+                    } else {
+                        alert("Failed to add user. Please check your input.");
+                    }
+                }
+            });
+        });
+
+
+        // Edit user
+        window.editUser = function (id) {
+            $.getJSON('/api/users/' + id, function (u) {
+                $('#editUserId').val(u.id);
+                $('#editUserEmail').val(u.email);
+                $('#editUserFirstName').val(u.firstName);
+                $('#editUserLastName').val(u.lastName);
+                $('#editUserRole').val(u.role);
+                new bootstrap.Modal($('#editUserModal')[0]).show();
+            });
+        };
+
+        // Save edited user
+        $('#editUserForm').submit(function (e) {
+            e.preventDefault();
+            const id = $('#editUserId').val();
+            const password = $('#editUserPassword').val();
+
+            const data = {
+                email: $('#editUserEmail').val(),
+                firstName: $('#editUserFirstName').val(),
+                lastName: $('#editUserLastName').val(),
+                role: $('#editUserRole').val()
+            };
+
+            // Chỉ thêm password nếu người dùng nhập
+            if (password.trim() !== '') {
+                data.password = password;
+            }
+
+            $.ajax({
+                url: '/api/users/' + id,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: () => location.reload()
+            });
+        });
+
+
+        //Delete user
+        window.deleteUser = function (id) {
+            if (confirm('Xoá user #' + id + '?')) {
+                $.ajax({
+                    url: '/api/users/' + id,
+                    type: 'DELETE',
+                    success: () => location.reload(),
+                    error: function (xhr) {
+                        if (xhr.status === 409) {
+                            alert('Không thể xoá user vì có đơn hàng chưa bị huỷ.');
+                        } else {
+                            alert('Lỗi khi xoá user.');
+                        }
+                    }
+                });
+            }
+        };
+
+        //Save active tab
+        // Lưu tab đang active vào localStorage
+        $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+            localStorage.setItem('activeAdminTab', $(e.target).attr('href'));
+        });
+
+        // Khi trang load, kiểm tra và mở lại tab đã lưu
+        $(function () {
+            const activeTab = localStorage.getItem('activeAdminTab');
+            if (activeTab) {
+                $('#adminTabs a[href="' + activeTab + '"]').tab('show');
+            }
+        });
+
+        //order
+        $(function () {
+            $('.order-status').on('change', function () {
+                const id = $(this).data('id');
+                const newStatus = $(this).val();
+                const trackingInput = $('.tracking-input[data-id="' + id + '"]');
+                if (newStatus === 'SHIPPING') {
+                    trackingInput.prop('disabled', false);
+                } else {
+                    trackingInput.prop('disabled', true).val('');
+                }
+            });
+
+            $('.save-order').on('click', function () {
+                const id = $(this).data('id');
+                const status = $('.order-status[data-id="' + id + '"]').val();
+                const trackingCode = $('.tracking-input[data-id="' + id + '"]').val();
+
+                $.ajax({
+                    url: '/api/orders/' + id,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify({status, trackingCode}),
+                    success: () => location.reload(),
+                    error: () => alert("Failed to update order.")
+                });
+            });
+        });
+
+        function filterProducts() {
+            const name = $('#filterName').val().toLowerCase();
+            const category = $('#filterCategory').val().toLowerCase();
+            const brand = $('#filterBrand').val().toLowerCase();
+            const minPrice = parseFloat($('#filterMinPrice').val()) || 0;
+            const maxPrice = parseFloat($('#filterMaxPrice').val()) || Infinity;
+            const stockStatus = $('#filterStockStatus').val();
+
+            $('#products table tbody tr').each(function () {
+                const row = $(this);
+                const prodName = row.find('td:nth-child(2)').text().toLowerCase();
+                const prodBrand = row.find('td:nth-child(3)').text().toLowerCase();
+                const prodPrice = parseFloat(row.find('td:nth-child(4)').text().replace('$', '')) || 0;
+                const prodStock = parseInt(row.find('td:nth-child(5)').text()) || 0;
+                const prodCategory = row.find('td:nth-child(6)').text().toLowerCase();
+                const isDiscontinued = row.hasClass('discontinued');
+
+                let visible = true;
+
+                if (name && !prodName.includes(name)) visible = false;
+                if (brand && !prodBrand.includes(brand)) visible = false;
+                if (category && !prodCategory.includes(category)) visible = false;
+                if (prodPrice < minPrice || prodPrice > maxPrice) visible = false;
+
+                if (stockStatus === 'out' && prodStock > 0) visible = false;
+                if (stockStatus === 'discontinued' && !isDiscontinued) visible = false;
+
+                row.toggle(visible);
+            });
+        }
+
+        function deleteBooking(id) {
+            if (confirm("CẢNH BÁO: Hành động này không thể hoàn tác.\nBạn có chắc muốn xóa vĩnh viễn đơn pre-order #" + id + "?")) {
+                $.ajax({
+                    url: '/api/bookings/' + id, type: 'DELETE',
                     success: () => {
-                        $('#addServiceModal').modal('hide');
+                        alert('Đã xóa đơn hàng #' + id);
                         location.reload();
                     },
-                    error: xhr => alert('Failed to add service: ' + xhr.responseText)
+                    error: () => alert('Có lỗi xảy ra, không thể xóa đơn hàng.')
                 });
+            }
+        }
+
+
+        $('.booking-status-select').on('change', function () {
+            const bookingId = $(this).data('id');
+            const newStatus = $(this).val();
+            const trackingInput = $('.booking-tracking-input[data-id="' + bookingId + '"]');
+            trackingInput.prop('disabled', newStatus !== 'SHIPPED');
+            if (newStatus !== 'SHIPPED') trackingInput.val('');
+        });
+
+        $('.save-booking-btn').on('click', function () {
+            const bookingId = $(this).data('id');
+            const newStatus = $('.booking-status-select[data-id="' + bookingId + '"]').val();
+            const trackingCode = $('.booking-tracking-input[data-id="' + bookingId + '"]').val();
+            if (!confirm('Bạn có chắc muốn cập nhật trạng thái cho đơn pre-order #' + bookingId + '?')) return;
+            $.ajax({
+                url: '/api/bookings/' + bookingId, type: 'PUT', contentType: 'application/json',
+                data: JSON.stringify({status: newStatus, trackingCode: trackingCode}),
+                success: () => {
+                    alert('Cập nhật thành công!');
+                    location.reload();
+                },
+                error: () => alert('Có lỗi xảy ra, không thể cập nhật trạng thái.')
             });
+        });
 
 
-            $(function () {
-
-                // 1) Thêm service
-                $('#addServiceForm').submit(function (e) {
-                    e.preventDefault();
-                    const data = {
-                        customerEmail: $('#addServiceEmail').val(),
-                        customerPhone: $('#addServicePhone').val(),
-                        serviceType: $('#addServiceType').val(),
-                        description: $('#addServiceDescription').val(),
-                        status: $('#addServiceStatus').val(),
-                        estimatedPrice: parseFloat($('#addServicePrice').val()) || 0
-                    };
-                    $.ajax({
-                        url: '/api/services',
-                        type: 'POST',
-                        contentType: 'application/json',
-                        data: JSON.stringify(data),
-                        success: () => {
-                            $('#addServiceModal').modal('hide');
-                            location.reload();
-                        },
-                        error: xhr => alert('Failed to add service: ' + xhr.responseText)
-                    });
-                });
-
-                // 2) Mở modal sửa và bind dữ liệu
-                window.editService = function (id) {
-                    $.getJSON('/api/services/' + id, s => {
-                        $('#editServiceId').val(s.id);
-                        $('#editServiceEmail').val(s.customerEmail);
-                        $('#editServicePhone').val(s.customerPhone);
-                        $('#editServiceType').val(s.serviceType);
-                        $('#editServiceDescription').val(s.description);
-                        $('#editServiceStatus').val(s.status);
-                        $('#editServicePrice').val(s.estimatedPrice);
-                        new bootstrap.Modal($('#editServiceModal')[0]).show();
-                    }).fail(() => alert('Service #' + id + ' not found.'));
-                };
-
-                // 3) Lưu chỉnh sửa
-                $('#editServiceForm').submit(function (e) {
-                    e.preventDefault();
-                    const id = $('#editServiceId').val();
-                    const data = {
-                        customerEmail: $('#editServiceEmail').val(),
-                        customerPhone: $('#editServicePhone').val(),
-                        serviceType: $('#editServiceType').val(),
-                        description: $('#editServiceDescription').val(),
-                        status: $('#editServiceStatus').val(),
-                        estimatedPrice: parseFloat($('#editServicePrice').val()) || 0
-                    };
-                    $.ajax({
-                        url: '/api/services/' + id,
-                        type: 'PUT',
-                        contentType: 'application/json',
-                        data: JSON.stringify(data),
-                        success: () => location.reload(),
-                        error: xhr => alert('Failed to update service: ' + xhr.responseText)
-                    });
-                });
-
-                // 4) Xóa
-                window.deleteService = function (id) {
-                    if (!confirm('Delete service #' + id + '?')) return;
-                    $.ajax({
-                        url: '/api/services/' + id,
-                        type: 'DELETE',
-                        success: () => location.reload(),
-                        error: xhr => alert('Failed to delete service #' + id + ': ' + xhr.responseText)
-                    });
-                };
-
-            });
-
-
-        </script>
+    </script>
 </body>
 </html>

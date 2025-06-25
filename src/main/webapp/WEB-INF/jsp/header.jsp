@@ -46,13 +46,14 @@
                     <a class="nav-link fw-bold text-dark" href="/">Trang chủ</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fw-bold text-dark" href="/products">Mods phím</a>
+                    <a class="nav-link fw-bold text-dark" href="/booking">Pre-orders</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fw-bold text-dark" href="/products">Sản phẩm <i class="fas fa-angle-down ms-1"></i></a>
+                    <a class="nav-link fw-bold text-dark" href="/products">Sản phẩm</a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link fw-bold text-dark" href="/">Về Kibo <i class="fas fa-angle-down ms-1"></i></a>
+                    <a class="nav-link fw-bold text-dark" href="/about">Về Kibo</a>
                 </li>
             </ul>
         </nav>

@@ -1,14 +1,12 @@
 package com.keycraft.controller;
 
+import com.keycraft.model.Booking;
 import com.keycraft.model.Order;
 import com.keycraft.model.Product;
 import com.keycraft.model.User;
 import com.keycraft.repository.OrderRepository;
 import com.keycraft.repository.UserRepository;
-import com.keycraft.service.CartService;
-import com.keycraft.service.OrderService;
-import com.keycraft.service.ProductService;
-import com.keycraft.service.ServiceBookingService;
+import com.keycraft.service.*;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -37,6 +35,8 @@ public class HomeController {
     private ServiceBookingService serviceBookingService;
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    private BookingService bookingService;
     @GetMapping("/")
     public String homeRedirect() {
         return "redirect:/index";
@@ -102,7 +102,7 @@ public class HomeController {
         	    "%Y-%m-%d",
         	    LocalDate.now().getMonthValue(),
         	    LocalDate.now().getYear()
-        	);        
+        	);
         List<Object[]> revenueByCategory = orderRepository.getRevenueByCategory(LocalDate.now().getMonthValue(), LocalDate.now().getYear());
         if (user == null || !User.UserRole.ADMIN.equals(user.getRole())) {
             return "redirect:/login?error=access_denied";
@@ -119,6 +119,10 @@ public class HomeController {
         model.addAttribute("revenueByCategory", revenueByCategory);
         model.addAttribute("currentMonth", LocalDate.now().getMonthValue());
         model.addAttribute("currentYear", LocalDate.now().getYear());
+        List<Booking> bookings = bookingService.findAll(); // Giả sử service có method findAll()
+        model.addAttribute("bookings", bookings);
+        model.addAttribute("bookingStatuses", Booking.BookingStatus.values());
+
 
 
 
@@ -148,4 +152,9 @@ public class HomeController {
         }
         return "auth/signup";
     }
+    @GetMapping("/about")
+    public String showAboutPage() {
+        return "about"; // Trả về tên file "about.jsp"
+    }
+
 }
